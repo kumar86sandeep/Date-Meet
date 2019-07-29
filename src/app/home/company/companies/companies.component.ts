@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Observable, throwError } from 'rxjs';
 import 'rxjs/add/operator/map'
+import { Angular5Csv } from 'angular5-csv/dist/Angular5-csv';
 
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireStorage } from '@angular/fire/storage';
@@ -12,10 +13,10 @@ import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { AngularFireDatabase } from '@angular/fire/database';
 
 //services
-import { TitleService, CompanyService,  CommonUtilsService } from '../../../core/services'
+import { TitleService, CategoryService, CompanyService,  CommonUtilsService } from '../../../core/services'
 
 //import models
-import { PagedData, Company, Page } from '../../../core/services/models'
+import { PagedData, Category, Subcategory, Company, Page } from '../../../core/services/models'
 
 import { environment } from '../../../../environments/environment'
 
@@ -28,7 +29,7 @@ import * as Prism from 'prismjs';
 })
 
 export class CompaniesComponent implements OnInit {
-
+  @ViewChild('myTable') table: any;
   @ViewChild('fileUploader') fileUploader:ElementRef;
   companyForm: FormGroup;
   dataObject:any = {}
@@ -39,6 +40,8 @@ export class CompaniesComponent implements OnInit {
   showCoverCropper = false
   totalTrashed:any = 0
   companies = new Array<Company>()
+  categories = new Array<Category>()
+  subcategories = new Array<Subcategory>()
   submitted:boolean = false
   imageChangedEvent: any = '';
   coverImageChangedEvent: any = '';
@@ -65,8 +68,38 @@ export class CompaniesComponent implements OnInit {
 
 
   
-  constructor(private companyService:CompanyService, private commonUtilsService:CommonUtilsService, private titleService: TitleService, private formBuilder: FormBuilder, private angularFirestore: AngularFirestore, private storage: AngularFireStorage) {  }
+  constructor(private categoryService:CategoryService, private companyService:CompanyService, private commonUtilsService:CommonUtilsService, private titleService: TitleService, private formBuilder: FormBuilder, private angularFirestore: AngularFirestore, private storage: AngularFireStorage) { 
+    this.categoryService.allCategory().subscribe(
+
+      //case success
+      (data) => {   
+      console.log('data',data);   
+      
+      this.categories =  [...data];   
+      console.log('categories',this.categories)
+
+    //case error 
+    },error => {
+      this.commonUtilsService.onError(error);
+    });
+   }
  
+   listSubcategory(event){
+ 
+        this.categoryService.listSubcategory(event).subscribe(
+    
+          //case success
+          (data) => {   
+          console.log('data',data);   
+          
+          this.subcategories =  [...data];   
+          console.log('subcategories',this.subcategories)
+    
+        //case error 
+        },error => {
+          this.commonUtilsService.onError(error);
+        });
+      }
 
   
   async onSubmit(){
@@ -75,21 +108,9 @@ export class CompaniesComponent implements OnInit {
       this.submitted = true
       return
     }
-   // this.isCollapsed = false
-
-   if(this.croppedImage && this.croppedCoverImage){
-      await this.logoImage();
-      await this.saveCoverImage()
-      await this.saveUpdate()
-   }else if(this.croppedImage){
-      await this.logoImage();
-      await this.saveUpdate()
-   }else if(this.croppedCoverImage){
-      await this.saveCoverImage()
-      await this.saveUpdate()
-   }
+    await this.saveUpdate()   
   }
-  async logoImage(){
+  async logoImage(id){
     let _this = this
     let path = `companies/logo/${new Date().getTime()}.jpg`;
         
@@ -98,12 +119,15 @@ export class CompaniesComponent implements OnInit {
           snapshot.ref.getDownloadURL().then(function(downloadURL) {
             console.log("logo available at", downloadURL);
           // _this.companyForm.get('logo').setValue(downloadURL)
-           _this.dataObject['logo']     = downloadURL
+          // _this.dataObject['logo']     = downloadURL
            // _this.saveUpdate(downloadURL)
+           _this.angularFirestore.collection('companies').doc(id).update({
+            logo:downloadURL
+           }) 
           });     
         });
   }
-  async saveCoverImage(){
+  async saveCoverImage(id){
     let _this = this
     let path = `companies/cover_image/${new Date().getTime()}.jpg`;
         
@@ -112,12 +136,15 @@ export class CompaniesComponent implements OnInit {
       snapshot.ref.getDownloadURL().then(function(downloadURL) {
         console.log("Cover image available at", downloadURL);
       // _this.companyForm.get('cover_image').setValue(downloadURL) 
-       _this.dataObject['cover_image']     = downloadURL      
+       //_this.dataObject['cover_image']     = downloadURL   
+       _this.angularFirestore.collection('companies').doc(id).update({
+        cover_image:downloadURL
+       })   
       });     
     }); 
   }
   saveUpdate(){
-  
+    let _this = this
     this.dataObject['name'] = this.companyForm.get('name').value
     this.dataObject['headline'] = this.companyForm.get('headline').value
     this.dataObject['location'] = this.companyForm.get('location').value
@@ -130,9 +157,11 @@ export class CompaniesComponent implements OnInit {
     this.dataObject['connect_google'] = this.companyForm.get('connect_google').value
     this.dataObject['status'] = this.companyForm.get('status').value
     this.dataObject['created_by'] = this.companyForm.get('created_by').value
+    this.dataObject['category_id'] = this.companyForm.get('category_id').value
+    this.dataObject['subcategory_id'] = this.companyForm.get('subcategory_id').value
     
    
-    console.log('save',this.dataObject);
+    //console.log('save',this.dataObject);
       this.croppedImage = ''
       this.croppedCoverImage = ''
       this.showCropper = false
@@ -141,13 +170,29 @@ export class CompaniesComponent implements OnInit {
  
     if(this.interestIdToUpdate){      
       this.dataObject['updated_at']= new Date().getTime() 
-      this.angularFirestore.collection('companies').doc(this.interestIdToUpdate).update(this.dataObject)
+      this.angularFirestore.collection('companies').doc(this.interestIdToUpdate).update(this.dataObject).then(function(snapshot){
+        //console.log('update',snapshot.id);
+        if(_this.croppedImage){
+          _this.logoImage(_this.interestIdToUpdate)
+        }
+        if(_this.croppedCoverImage){
+         _this.saveCoverImage(_this.interestIdToUpdate)
+       }
+      })
       this.interestIdToUpdate='';   
       this.commonUtilsService.onSuccess('Company updated'); 
     }else{ 
       this.dataObject['created_at']= new Date().getTime()  
       this.dataObject['updated_at']= new Date().getTime() 
-       this.angularFirestore.collection('companies').add(this.dataObject)
+       this.angularFirestore.collection('companies').add(this.dataObject).then(function(snapshot){
+         if(_this.croppedImage){
+           _this.logoImage(snapshot.id)
+         }
+         if(_this.croppedCoverImage){
+          _this.saveCoverImage(snapshot.id)
+        }
+        console.log('save',snapshot.id);
+      })
      
       this.commonUtilsService.onSuccess('Company added successfully.');      
     }
@@ -156,6 +201,9 @@ export class CompaniesComponent implements OnInit {
     this.dataObject = {}
     this.companyForm.get('created_by').setValue('admin')
     this.companyForm.get('created_by').setValue(true)
+    this.companyForm.get('category_id').setValue('')
+    this.subcategories=new Array<Subcategory>()
+    this.companyForm.get('subcategory_id').setValue('')
 
   }
   ngOnInit() {
@@ -165,6 +213,8 @@ export class CompaniesComponent implements OnInit {
       logo:[null],
       headline:[null,[Validators.required]],
       location:[null,[Validators.required]],
+      category_id:[null,[Validators.required]],
+      subcategory_id:[null,[Validators.required]],      
       working_hours_from:[null,[Validators.required]],
       working_hours_to:[null,[Validators.required]],
       cost_for_two:[null,[Validators.required]],
@@ -235,8 +285,8 @@ export class CompaniesComponent implements OnInit {
 
     }
 
- populateEditForm(company){
-
+    async populateEditForm(company){
+      await this.listSubcategory(company.category_id)
   this.isCollapsed = false;
   window.scrollTo(0,document.body.scrollHeight);
     this.interestIdToUpdate = company.id
@@ -275,6 +325,47 @@ export class CompaniesComponent implements OnInit {
     this.showCoverCropper = true;
 
 }
+toggleExpandRow(row) {
+  console.log('Toggled Expand Row!', row);
+  this.table.rowDetail.toggleExpandRow(row);
+}
+onDetailToggle(event) {
+  console.log('Detail Toggled', event);
+}
+
+/**
+   * download the list of all purchases in csv
+   */
+  downloadCsv() {
+
+    if (this.companies.length == 0)
+      return
+
+    var options = {
+      fieldSeparator: ',',
+      showLabels: true,
+      showTitle: false,
+      title: 'Company List',
+      useBom: true,
+      headers: ["Name", "Location", "Cost for two", "Status", "created on"]
+    };
+
+    let data = [];
+    //iterate purchase list and make custom data
+    this.companies.forEach(company => {
+      let purchaseObj = {
+        name: company.name,
+        location: company.location,
+        cost_for_two: company.cost_for_two,
+        status: company.status,
+        created_at: company.created_at,       
+      };
+      data.push(purchaseObj);
+    });
+console.log(data);
+    //pass data and options to download csv
+    new Angular5Csv(data, 'Company List', options);
+  }
     
 
 }

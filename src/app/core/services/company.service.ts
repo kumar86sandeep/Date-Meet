@@ -30,7 +30,7 @@ export class CompanyService {
     return this.firestore.collection<PagedData<Company>>('companies', ref => {
       if(page.search.length>0){
         return ref
-        .where("title",'==',page.search).where("is_trashed",'==','').orderBy(page.sortProperty, page.sortDirection)
+        .where("name",'==',page.search).orderBy(page.sortProperty, page.sortDirection)
       }else{
         return ref.orderBy(page.sortProperty, page.sortDirection)
       }

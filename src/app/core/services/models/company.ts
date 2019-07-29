@@ -14,6 +14,8 @@ export class Company {
     connect_google:any
     status:any
     created_by:any
+    subcategory_id:any
+    category_id:any
     created_at: Date;
     updated_at:Date;
     
@@ -32,6 +34,8 @@ export class Company {
         this.connect_facebook =   object.data().connect_facebook
         this.connect_google =   object.data().connect_google
         this.status = (object.data().status)  
+        this.category_id = (object.data().category_id)  
+        this.subcategory_id = (object.data().subcategory_id)  
         this.created_by = object.data().created_by
         this.created_at = new Date(object.data().created_at) 
         this.updated_at  = new Date(object.data().updated_at)
