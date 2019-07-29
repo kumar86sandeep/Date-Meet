@@ -1,0 +1,203 @@
+<mk-box [isLoading]="isLoading" header="Interests Listing" [isCollapsable]="true" [isRemovable]="false">
+    
+    <div class="box-body">
+      <div  class="row">
+         
+
+        <div class="form-group col-md-3">
+          <label>Total Interests({{page.totalElements}})</label>
+                 
+        </div>
+        <div class="form-group col-md-3">
+        
+          <a routerLink="trashed">Trashed Interests({{totalTrashed}})</a>
+        </div>
+
+        <div class="form-group col-md-6">
+        
+          <input (input)="onSearch($event.target.value)" style="border:1px solid; border-radius:25px;" class="form-control"  type="text" placeholder="Search by title" >
+        </div>
+
+        
+        
+
+      </div>
+    </div>
+
+  <ngx-datatable
+    #myTable
+    class="bootstrap"   
+    [count]="page.totalElements" 
+    [offset]="page.pageNumber"
+    [limit]="page.size"   
+    [headerHeight]="50"
+    [footerHeight]="50"
+    [rowHeight]="50"
+    [externalPaging]="true"      
+    [rows]="interests"
+    [sorts]="[{prop: 'created_at', dir: 'desc'}]"    
+    (page)="setPage($event,'all')"
+    (sort)="onSort($event)"
+  >
+    
+  
+  <ngx-datatable-column [sortable]="false" [resizeable]="false"
+  [draggable]="false"  width="100" name="Image">
+    <ng-template
+      let-rowIndex="rowIndex"
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      <img style="height:34px;width:50px" src="{{ row.image }}">
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column [resizeable]="false"
+  [draggable]="false"  width="120" [sortable]="false" name="Title">
+    <ng-template
+      let-rowIndex="rowIndex"
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      {{ row.title }}
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column [resizeable]="false"
+  [draggable]="false" prop="category_id" [sortable]="false" width="100" name="Category">
+      <ng-template
+        let-rowIndex="rowIndex"
+        let-row="row"
+        ngx-datatable-cell-template
+      >
+        {{ row.category }}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column [resizeable]="false"
+    [draggable]="false" prop="subcategory_id" [sortable]="false" width="150" name="Subcategory">
+      <ng-template
+        let-rowIndex="rowIndex"
+        let-row="row"
+        ngx-datatable-cell-template
+      >
+        {{ row.subcategory }}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column [resizeable]="false"
+    [draggable]="false" prop="status" [sortable]="false" width="80" name="Status">
+      <ng-template
+        let-rowIndex="rowIndex"
+        let-row="row"
+        ngx-datatable-cell-template
+      >
+        {{ row.status }}
+      </ng-template>
+    </ngx-datatable-column>
+    
+    <ngx-datatable-column [resizeable]="false"
+    [draggable]="false" width="140" [sortable]="true"  prop="created_at" name="Created On">
+        <ng-template
+          let-row="row"
+          let-value="value"
+          ngx-datatable-cell-template
+        >
+        {{ row.created_at | date:'MM-dd-yy, h:mm a' }}
+        </ng-template>
+    </ngx-datatable-column>
+
+
+    <ngx-datatable-column width="100" [sortable]="false" [resizeable]="false"
+    [draggable]="false"  name="Action">
+        <ng-template
+          let-row="row"
+          let-value="value"
+          ngx-datatable-cell-template
+        >
+        <a href="javascript:void(0)" (click)="populateEditForm(row)"><i class="fa fa-edit"></i></a> | <a (click)="delete(row.id)"href="javascript:void(0)"><i class="fa fa-trash"></i></a>
+        </ng-template>
+    </ngx-datatable-column>
+
+    
+
+
+  </ngx-datatable>
+
+</mk-box>
+
+<mk-box [isCollapsed]="isCollapsed"  header="{{(interestIdToUpdate)?'Update':'Add'}} Interest" [isCollapsable]="true" [isRemovable]="false">
+
+  
+  <form [formGroup]="interestForm" (ngSubmit)="onSubmit()">
+                <div class="box-body">
+                  <div class="form-group">
+                    <label>Select category*</label>
+                    <select formControlName="category_id" (change)="listSubcategory($event.target.value)" class="form-control">
+                      <option value="">Select category</option>
+                      <option *ngFor="let category of categories" value="{{category.title}}">{{category.title}}</option>
+                    </select>
+                    <p *ngIf="interestForm.controls.category_id.touched || submitted">
+                      <app-form-validation-errors errorPrefix="Category " [errors]="interestForm.get('category_id').errors"></app-form-validation-errors>
+                    </p>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Select subcategory*</label>
+                    <select multiple formControlName="subcategory_id" class="form-control">
+                      <option value="">Select subcategory</option>
+                      <option *ngFor="let subcategory of subcategories" value="{{subcategory.title}}">{{subcategory.title}}</option>
+                    </select>
+                    <p *ngIf="interestForm.controls.subcategory_id.touched || submitted">
+                      <app-form-validation-errors errorPrefix="Subcategory " [errors]="interestForm.get('subcategory_id').errors"></app-form-validation-errors>
+                    </p>
+                  </div>
+  
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Interest title*</label>
+                    <input formControlName="title" type="text" class="form-control"  placeholder="Enter interest title">
+                    <p *ngIf="interestForm.controls.title.touched || submitted">
+                      <app-form-validation-errors errorPrefix="Intertest title " [errors]="interestForm.get('title').errors"></app-form-validation-errors>
+                    </p>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Select status*</label>
+                    <select formControlName="status" class="form-control">
+                      <option value="Active">Active</option>
+                      <option value="Inactive">Inactive</option>
+                    </select>
+                    
+                  </div>
+                 
+                  <div class="form-group">
+                    <label for="exampleInputFile">File input</label>
+                    <input type="file" #fileUploader accept="image/*" (change)="fileChangeEvent($event)">
+  
+                    <p *ngIf="croppedImage" class="help-block">Please crop image.</p>
+                    <image-cropper
+                    
+                [imageChangedEvent]="imageChangedEvent"
+                [maintainAspectRatio]="true"
+                [aspectRatio]="16 / 9"             
+                [resizeToWidth]="128"
+                format="png"
+                (imageCropped)="imageCropped($event)"
+                (imageLoaded)="imageLoaded()"
+                (cropperReady)="cropperReady()"
+                [style.display]="showCropper ? null : 'none'"
+                (loadImageFailed)="loadImageFailed()"
+            ></image-cropper>
+                    <img [src]="croppedImage" />
+                  </div>
+                 
+                </div>
+                <!-- /.box-body -->
+  
+                <div class="box-footer">
+                  <button type="submit" [disabled]="!interestForm.valid" [ngClass]="{ 'submit-btn-disable': !interestForm.valid }" class="btn btn-primary">{{(interestIdToUpdate)?'Update':'Add'}}  Interest</button>
+                </div>
+              </form>
+  </mk-box>
+  
+
+  

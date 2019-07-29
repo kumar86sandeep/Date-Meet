@@ -1,0 +1,103 @@
+<mk-box  [isCollapsed]="true"  header="Change Password"  [isRemovable]="false">
+
+    <form [formGroup]="changePasswordForm" (ngSubmit)="changePassword()"> 
+          
+          <div class="form-group">
+              <label for="title">Old Password*:</label>
+              <input type="password"  class="form-control"  formControlName="old_password" placeholder="Old Password">
+              <p *ngIf="changePasswordForm.controls.old_password.touched || isPasswordChangeFormSubmitted">
+                  <app-form-validation-errors errorPrefix="Old password " [errors]="changePasswordForm.get('old_password').errors"></app-form-validation-errors>
+                </p>
+            </div>
+
+            <div class="form-group">
+                <label for="title">New Password*:</label>
+                <input type="password"  class="form-control"  formControlName="password" placeholder="New Password">
+                <p *ngIf="changePasswordForm.controls.password.touched || isPasswordChangeFormSubmitted">
+                    <app-form-validation-errors errorPrefix="New password " [errors]="changePasswordForm.get('password').errors"></app-form-validation-errors>
+                  </p>
+              </div>
+
+              <div class="form-group">
+                  <label for="title">Confirm Password*:</label>
+                  <input type="password"  class="form-control"  formControlName="repassword" placeholder="Confirm Password">
+                  <p *ngIf="changePasswordForm.controls.repassword.touched || isPasswordChangeFormSubmitted">
+                      <app-form-validation-errors errorPrefix="Confirm password " [errors]="changePasswordForm.get('repassword').errors"></app-form-validation-errors>
+                    </p>
+                </div>
+          
+          <button type="submit"  [disabled]="!changePasswordForm.valid" [ngClass]="{ 'submit-btn-disable': !changePasswordForm.valid }" class="btn btn-primary  btn-flat">Update Password</button>
+          
+        
+      </form>
+    
+</mk-box>
+<mk-box  header="Admin Profile"  [isRemovable]="false">
+  
+  <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+
+     
+      <div  class="row">
+         
+
+          <div class="form-group col-md-4">
+            <label>First Name*</label>
+            <input  class="form-control" formControlName="first_name" type="text" placeholder="First Name">  
+            <p *ngIf="profileForm.controls.first_name.touched || isProfileFormSubmitted">
+                <app-form-validation-errors errorPrefix="First name " [errors]="profileForm.get('first_name').errors"></app-form-validation-errors>
+              </p>       
+          </div>
+
+          <div class="form-group col-md-4">
+            <label>Last Name*</label>
+            <input class="form-control" formControlName="last_name" type="text" placeholder="Last Name" >
+          </div>
+          <p *ngIf="profileForm.controls.last_name.touched || isProfileFormSubmitted">
+              <app-form-validation-errors errorPrefix="Last name " [errors]="profileForm.get('last_name').errors"></app-form-validation-errors>
+            </p>
+
+        </div>
+
+
+        
+        <div class="form-group">
+            <label for="title">Email address*:</label>
+            <input type="text"  readonly class="form-control"  formControlName="email" placeholder="Email Address">
+            <p *ngIf="profileForm.controls.email.touched || isProfileFormSubmitted">
+                <app-form-validation-errors errorPrefix="Email address " [errors]="profileForm.get('email').errors"></app-form-validation-errors>
+              </p>
+          </div>
+
+        <div class="form-group">
+          <label for="title">Recovery  address:</label>
+          <input type="text"  formControlName="recovery_email" class="form-control"  placeholder="Recovery Email Address">
+          <p *ngIf="profileForm.controls.recovery_email.touched || submitted">
+              <app-form-validation-errors errorPrefix="Recover email " [errors]="profileForm.get('recovery_email').errors"></app-form-validation-errors>
+            </p>
+        </div>
+
+        
+
+        <div class="form-group">
+          <label for="exampleInputFile">Upload Profile Image</label>
+          <input type="file"  (change)="fileChangeEvent($event)">
+
+          <p *ngIf="croppedImage" class="help-block">Please crop image.</p>
+          <image-cropper                  
+					    [imageChangedEvent]="imageChangedEvent"
+					    [maintainAspectRatio]="false"            
+					    format="png"
+					    (imageCropped)="imageCropped($event)">
+          </image-cropper>
+          <img *ngIf="croppedImage"  width="50%" height="50%"[src]="croppedImage" />
+        </div>
+        
+        <button type="submit"  [disabled]="!profileForm.valid" [ngClass]="{ 'submit-btn-disable': !profileForm.valid }" class="btn btn-primary  btn-flat">Update Profile</button>
+      
+      
+    </form>
+    
+  </mk-box> 
+   
+
+

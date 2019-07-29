@@ -1,0 +1,37 @@
+<div class="navbar-custom-menu">
+  <ul class="nav navbar-nav">
+    
+    <li mk-dropdown type="list" [isWrapper]="false" class="user user-menu">
+      <mk-dropdown-toggle>
+        <a #toggleElement>
+          <span class="user_img_small">
+            
+            <img src="{{profileData.profile_pic}}" class="user-image" alt="User Image">
+          </span>
+          <span class="hidden-xs">{{profileData.displayName}}</span>
+        </a>
+      </mk-dropdown-toggle>
+      <mk-dropdown-menu>
+        <li class="user-header">
+         
+            <span class="user_icon_big">
+            <img src="{{profileData.profile_pic}}" class="img-circle" alt="User Image">
+          </span>
+
+          <p>
+            {{profileData.displayName}} - Date & Meet Admin
+           
+          </p>
+        </li>       
+        <li class="user-footer">
+          <div class="pull-left">
+            <a href="javascript:void(0)" (click)="redirectToProfile()" class="btn btn-default btn-flat">Profile</a>
+          </div>
+          <div class="pull-right">
+            <a href="javascript:void(0)" (click)="logout()" class="btn btn-default btn-flat">Sign out</a>
+          </div>
+        </li>
+      </mk-dropdown-menu>
+    </li>
+  </ul>
+</div>
