@@ -1,0 +1,351 @@
+<mk-box [isLoading]="isLoading" header="Company Listing" [isCollapsable]="true" [isRemovable]="false">
+    
+  <div class="box-body">
+    <div  class="row">
+       
+
+      <div class="form-group col-md-6">
+     
+               
+      </div>
+   
+
+      <div class="form-group col-md-6">
+      
+        <input  style="border:1px solid; border-radius:25px;" class="form-control"  type="text" placeholder="Search by company name" >
+      </div>
+
+      
+      
+
+    </div>
+  </div>
+
+<ngx-datatable
+  #myTable
+  class="bootstrap"   
+  [count]="page.totalElements" 
+  [offset]="page.pageNumber"
+  [limit]="page.size"   
+  [headerHeight]="50"
+  [footerHeight]="50"
+  [rowHeight]="50"
+  [externalPaging]="true"      
+  [rows]="companies"
+  [sorts]="[{prop: 'created_at', dir: 'desc'}]"    
+  (page)="setPage($event,'all')"
+>
+  
+<ngx-datatable-column [sortable]="false" 
+[draggable]="false"  name="Action">
+    <ng-template
+      let-row="row"
+      let-value="value"
+      ngx-datatable-cell-template
+    >
+    <a href="javascript:void(0)" (click)="populateEditForm(row)"><i class="fa fa-edit"></i></a> | <a (click)="delete(row.id)"href="javascript:void(0)"><i class="fa fa-trash"></i></a>
+    </ng-template>
+</ngx-datatable-column>
+
+<ngx-datatable-column 
+[draggable]="false"  [sortable]="false" name="Title">
+  <ng-template
+    let-rowIndex="rowIndex"
+    let-row="row"
+    ngx-datatable-cell-template
+  >
+    {{ row.name }}
+  </ng-template>
+</ngx-datatable-column>
+
+<ngx-datatable-column [sortable]="false" 
+[draggable]="false"  name="Cover Image">
+  <ng-template
+    let-rowIndex="rowIndex"
+    let-row="row"
+    ngx-datatable-cell-template>
+    <img width="50%" src="{{ row.cover_image }}">
+  </ng-template>
+</ngx-datatable-column>
+
+<ngx-datatable-column [sortable]="false" 
+[draggable]="false"  name="Logo">
+  <ng-template
+    let-rowIndex="rowIndex"
+    let-row="row"
+    ngx-datatable-cell-template>
+    <img width="50%" src="{{ row.logo }}">
+  </ng-template>
+</ngx-datatable-column>
+
+<ngx-datatable-column 
+[draggable]="false" [sortable]="false" name="Headline">
+  <ng-template
+    let-rowIndex="rowIndex"
+    let-row="row"
+    ngx-datatable-cell-template
+  >
+    {{ row.headline }}
+  </ng-template>
+</ngx-datatable-column>
+
+<ngx-datatable-column 
+[draggable]="false" [sortable]="false" name="Location">
+  <ng-template
+    let-rowIndex="rowIndex"
+    let-row="row"
+    ngx-datatable-cell-template
+  >
+    {{ row.location }}
+  </ng-template>
+</ngx-datatable-column>
+
+<ngx-datatable-column 
+[draggable]="false" prop="category_id" [sortable]="false"  name="Working Hours">
+    <ng-template
+      let-rowIndex="rowIndex"
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      {{ row.working_hours }}
+    </ng-template>
+  </ngx-datatable-column>
+
+<ngx-datatable-column 
+[draggable]="false" [sortable]="false" name="Cost For 2">
+    <ng-template
+      let-rowIndex="rowIndex"
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      {{ row.cost_for_two }}
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column 
+[draggable]="false" [sortable]="false" name="Website">
+    <ng-template
+      let-rowIndex="rowIndex"
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      {{ row.website }}
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column 
+[draggable]="false" [sortable]="false"  name="Connect Instagram">
+    <ng-template
+      let-rowIndex="rowIndex"
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      {{row.connect_instagram}}
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column 
+[draggable]="false" [sortable]="false" name="Connect Facebook">
+    <ng-template
+      let-rowIndex="rowIndex"
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      {{row.connect_facebook}}
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column 
+[draggable]="false" [sortable]="false" name="Connect Google">
+    <ng-template
+      let-rowIndex="rowIndex"
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      {{row.connect_google}}
+    </ng-template>
+  </ngx-datatable-column>
+
+
+  <ngx-datatable-column 
+  [draggable]="false" [sortable]="true"  prop="created_at" name="Created On">
+      <ng-template
+        let-row="row"
+        let-value="value"
+        ngx-datatable-cell-template
+      >
+      {{ row.created_at | date:'MM-dd-yy, h:mm a' }}
+      </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column 
+  [draggable]="false" prop="status" [sortable]="false" name="Status">
+    <ng-template 
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      {{ row.status }}
+    </ng-template>
+  </ngx-datatable-column>
+  
+  <ngx-datatable-column 
+  [draggable]="false" [sortable]="false"   name="Created By">
+      <ng-template
+        let-row="row"
+        let-value="value"
+        ngx-datatable-cell-template
+      >
+       {{row.created_by}}
+      </ng-template>
+  </ngx-datatable-column>
+
+
+
+
+  
+
+
+</ngx-datatable>
+
+</mk-box>
+
+<mk-box [isCollapsed]="isCollapsed"  header="{{(interestIdToUpdate)?'Update':'Add'}} Company" [isCollapsable]="true" [isRemovable]="false">
+
+
+<form [formGroup]="companyForm" (ngSubmit)="onSubmit()">
+              <div class="box-body">            
+
+                <div class="form-group">
+                  <label for="companyname">Company Name*</label>
+                  <input formControlName="name" type="text" class="form-control"  placeholder="Enter company name">
+                  <p *ngIf="companyForm.controls.name.touched || submitted">
+                    <app-form-validation-errors errorPrefix="Company name " [errors]="companyForm.get('name').errors"></app-form-validation-errors>
+                  </p>
+                </div>
+
+                <div class="form-group">
+                  <label for="headline">Headeline*</label>
+                  <input formControlName="headline" type="text" class="form-control"  placeholder="Enter company headline">
+                  <p *ngIf="companyForm.controls.headline.touched || submitted">
+                    <app-form-validation-errors errorPrefix="Company headline " [errors]="companyForm.get('headline').errors"></app-form-validation-errors>
+                  </p>
+                </div>
+
+                <div class="form-group">
+                  <label for="location">Location*</label>
+                  <input formControlName="location" type="text" class="form-control"  placeholder="Enter company location">
+                  <p *ngIf="companyForm.controls.location.touched || submitted">
+                    <app-form-validation-errors errorPrefix="Company location " [errors]="companyForm.get('location').errors"></app-form-validation-errors>
+                  </p>
+                </div>
+                <div  class="row">
+         
+                  <label for="headline">Working Hours*</label>
+                  <div class="form-group col-md-4">
+                    
+                    <input formControlName="working_hours_from" type="text" class="form-control"  placeholder="From HH:MM" mask="Hh:m0">
+                    <p *ngIf="companyForm.controls.working_hours_from.touched || submitted">
+                      <app-form-validation-errors errorPrefix="Working hours From " [errors]="companyForm.get('working_hours_from').errors"></app-form-validation-errors>
+                    </p>
+                  </div>
+                  <div class="form-group col-md-4">
+                   
+                    <input formControlName="working_hours_to" type="text" class="form-control"  placeholder="To HH:MM" mask="Hh:m0">
+                    <p *ngIf="companyForm.controls.working_hours_to.touched || submitted">
+                      <app-form-validation-errors errorPrefix="Working hours to " [errors]="companyForm.get('working_hours_to').errors"></app-form-validation-errors>
+                    </p>
+                  </div>
+                </div>
+
+                
+                <div class="form-group">
+                  <label for="headline">Cost for two*</label>
+                  <input prefix="$" mask="comma_separator.2" formControlName="cost_for_two" type="text" class="form-control"  placeholder="Enter cost for two">
+                  <p *ngIf="companyForm.controls.cost_for_two.touched || submitted">
+                    <app-form-validation-errors errorPrefix="Cost for two " [errors]="companyForm.get('cost_for_two').errors"></app-form-validation-errors>
+                  </p>
+                </div>
+
+                <div class="form-group">
+                  <label for="headline">Website*</label>
+                  <input formControlName="website" type="text" class="form-control"  placeholder="Enter website url">
+                  <p *ngIf="companyForm.controls.website.touched || submitted">
+                    <app-form-validation-errors errorPrefix="Website url " [errors]="companyForm.get('website').errors"></app-form-validation-errors>
+                  </p>
+                </div>
+
+                <div class="form-group">
+                  <label for="headline">Connect Instagram</label>
+                  <input formControlName="connect_instagram" type="text" class="form-control"  placeholder="Enter connect instagram">
+                  
+                </div>
+
+                <div class="form-group">
+                  <label for="headline">Connect Facebook</label>
+                  <input formControlName="connect_facebook" type="text" class="form-control"  placeholder="Enter connect faceboog">                 
+                </div>
+
+                <div class="form-group">
+                  <label for="headline">Connect google</label>
+                  <input formControlName="connect_google" type="text" class="form-control"  placeholder="Enter connect google">                 
+                </div>
+
+                <div class="form-group">
+                  <label>Select status*</label>
+                  <select formControlName="status" class="form-control">
+                    <option value="true">Active</option>
+                    <option value="false">Inactive</option>
+                  </select>
+                  
+                </div>
+               
+                <div class="form-group">
+                  <label for="exampleInputFile">Company Logo</label>
+                  <input type="file" #fileUploader (change)="fileChangeEvent($event)">
+
+                  <p *ngIf="croppedImage" class="help-block">Please crop image.</p>
+                  <image-cropper                  
+                      [imageChangedEvent]="imageChangedEvent"
+                      [maintainAspectRatio]="true"
+                      [aspectRatio]="16 / 9"             
+                      [resizeToWidth]="128"
+                      format="png"
+                      (imageCropped)="imageCropped($event)"
+                      (imageLoaded)="imageLoaded()"
+                     
+                      [style.display]="showCropper ? null : 'none'"
+                      
+                  ></image-cropper>
+                  <img [src]="croppedImage" />
+                  <img *ngIf="!croppedImage && interestIdToUpdate" src="{{ companyForm.get('logo').value }}">
+                </div>
+               
+                <div class="form-group">
+                  <label for="exampleInputFile">Company Cover Image</label>
+                  <input type="file" #fileUploader (change)="coverFileChangeEvent($event)">
+
+                  <p *ngIf="croppedImage" class="help-block">Please crop image.</p>
+                  <image-cropper                  
+                      [imageChangedEvent]="coverImageChangedEvent"
+                      [maintainAspectRatio]="true"
+                      [aspectRatio]="16 / 9"             
+                      [resizeToWidth]="128"
+                      format="png"
+                      (imageCropped)="coverImageCropped($event)"
+                      (imageLoaded)="coverImageLoaded()"                     
+                      [style.display]="showCoverCropper ? null : 'none'"                  
+                  ></image-cropper>
+                  <img [src]="croppedCoverImage" />
+                  <img *ngIf="!croppedCoverImage && interestIdToUpdate" src="{{ companyForm.get('cover_image').value }}">
+                </div>
+
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <button type="submit" [disabled]="!companyForm.valid" [ngClass]="{ 'submit-btn-disable': !companyForm.valid }" class="btn btn-primary">{{(interestIdToUpdate)?'Update':'Add'}}  Compnay</button>
+              </div>
+            </form>
+</mk-box>
+
+

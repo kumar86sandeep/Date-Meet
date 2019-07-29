@@ -1,0 +1,124 @@
+<mk-box [isLoading]="isLoading" header="Trashed Interest Listing" [isCollapsable]="true" [isRemovable]="false">
+    
+  <div class="box-body">
+    <div  class="row">
+       
+
+      <div class="form-group col-md-3">
+      
+        <a  [routerLink]="['../']">Active Interests({{totalActive}})</a>
+      </div>
+
+      <div class="form-group col-md-6">
+      
+        <input (input)="onSearch($event.target.value)" style="border:1px solid; border-radius:25px;" class="form-control"  type="text" placeholder="Search by title" >
+      </div>
+
+      
+      
+
+    </div>
+  </div>
+  <ngx-datatable
+    #myTable
+    class="bootstrap"   
+    [count]="page.totalElements" 
+    [offset]="page.pageNumber"
+    [limit]="page.size"   
+    [headerHeight]="50"
+    [footerHeight]="50"
+    [rowHeight]="50"
+    [externalPaging]="true"      
+    [rows]="trashed"
+    [sorts]="[{prop: 'created_at', dir: 'desc'}]"    
+    (page)="setPage($event,'all')"
+    (sort)="onSort($event)"
+  >
+    
+  
+  <ngx-datatable-column [sortable]="false" [resizeable]="false"
+  [draggable]="false"  width="100" name="Image">
+    <ng-template
+      let-rowIndex="rowIndex"
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      <img style="height:34px;width:50px" src="{{ row.image }}">
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column [resizeable]="false"
+  [draggable]="false"  width="120" [sortable]="false" name="Title">
+    <ng-template
+      let-rowIndex="rowIndex"
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      {{ row.title }}
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column [resizeable]="false"
+  [draggable]="false" prop="category_id" [sortable]="false" width="100" name="Category">
+      <ng-template
+        let-rowIndex="rowIndex"
+        let-row="row"
+        ngx-datatable-cell-template
+      >
+        {{ row.category }}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column [resizeable]="false"
+    [draggable]="false" prop="subcategory_id" [sortable]="false" width="150" name="Subcategory">
+      <ng-template
+        let-rowIndex="rowIndex"
+        let-row="row"
+        ngx-datatable-cell-template
+      >
+        {{ row.subcategory }}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column [resizeable]="false"
+    [draggable]="false" prop="status" [sortable]="false" width="80" name="Status">
+      <ng-template
+        let-rowIndex="rowIndex"
+        let-row="row"
+        ngx-datatable-cell-template
+      >
+        {{ row.status }}
+      </ng-template>
+    </ngx-datatable-column>
+    
+    <ngx-datatable-column [resizeable]="false"
+    [draggable]="false" width="140" [sortable]="true"  prop="created_at" name="Created On">
+        <ng-template
+          let-row="row"
+          let-value="value"
+          ngx-datatable-cell-template
+        >
+        {{ row.created_at | date:'MM-dd-yy, h:mm a' }}
+        </ng-template>
+    </ngx-datatable-column>
+
+
+
+  <ngx-datatable-column width="100" [sortable]="false" [resizeable]="false"
+  [draggable]="false"  name="Action">
+      <ng-template
+        let-row="row"
+        let-value="value"
+        ngx-datatable-cell-template
+      >
+       <a title="Restore Interest" (click)="restore(row.id)"  href="javascript:void(0)"><i class="fa fa-undo"></i></a> | <a title="Delete Interest" (click)="delete(row.id)"href="javascript:void(0)"><i class="fa fa-trash"></i></a>
+      </ng-template>
+  </ngx-datatable-column>
+
+  
+
+
+</ngx-datatable>
+
+</mk-box>
+
+
