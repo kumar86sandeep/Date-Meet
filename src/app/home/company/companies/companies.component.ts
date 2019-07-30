@@ -8,6 +8,8 @@ import "rxjs/add/operator/debounceTime";
 import "rxjs/add/operator/map";
 
 import { Angular5Csv } from 'angular5-csv/dist/Angular5-csv';
+import { Options, LabelType, ChangeContext } from 'ng5-slider';
+
 
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireStorage } from '@angular/fire/storage';
@@ -33,7 +35,25 @@ import * as Prism from 'prismjs';
 export class CompaniesComponent implements OnInit {
   @ViewChild('myTable') table: any;
   @ViewChild('fileUploader') fileUploader: ElementRef;
+  minValue: number = 10;
+  maxValue: number = 19000;
+  options: Options = {
+    floor: 0,
+    ceil: 20000,
+    translate: (value: number, label: LabelType): string => {
+      switch (label) {
+        case LabelType.Low:
+          return '<b>Min price:</b> $' + value;
+        case LabelType.High:
+          return '<b>Max price:</b> $' + value;
+        default:
+          return '$' + value;
+      }
+    }
+  };
+
   companyForm: FormGroup;
+  filterForm: FormGroup;
   searchForm: FormGroup;
   dataObject: any = {}
   isLoading: boolean = false
@@ -186,6 +206,16 @@ export class CompaniesComponent implements OnInit {
   }
  
  
+  private initFilterForm(){
+    this.filterForm = this.formBuilder.group({
+      category: [''],
+      status: [''],
+      min_price: [null],
+      max_price: [null],
+      date_from:[null],
+      date_to: [null]
+    })
+  }
 
   private initResetForm(){
     this.croppedImage = ''
@@ -200,8 +230,6 @@ export class CompaniesComponent implements OnInit {
     this.companyForm.get('category_id').setValue('')
     this.subcategories = new Array<Subcategory>()
     this.companyForm.get('subcategory_id').setValue('')
-
-
   }
   ngOnInit() {
     this.searchForm = this.formBuilder.group({
@@ -210,6 +238,7 @@ export class CompaniesComponent implements OnInit {
 
     this.initSearchForm();
     this.initCompanyForm();
+    this.initFilterForm();
 
     this.titleService.setTitle();
 
@@ -359,7 +388,7 @@ export class CompaniesComponent implements OnInit {
       showTitle: false,
       title: 'Company List',
       useBom: true,
-      headers: ["Name", "Location", "Cost for two", "Status", "created on"]
+      headers: ["Name", "Category" ,"Sub-category","Location", "Cost for two", "Status", "created on"]
     };
 
     let data = [];
@@ -367,9 +396,11 @@ export class CompaniesComponent implements OnInit {
     this.companies.forEach(company => {
       let purchaseObj = {
         name: company.name,
+        category_id: company.category_id,
+        subcategory_id: company.subcategory_id,
         location: company.location,
         cost_for_two: company.cost_for_two,
-        status: company.status,
+        status: (company.status)?'Active':'Inactive',
         created_at: company.created_at,
       };
       data.push(purchaseObj);
@@ -377,6 +408,19 @@ export class CompaniesComponent implements OnInit {
     console.log(data);
     //pass data and options to download csv
     new Angular5Csv(data, 'Company List', options);
+  }
+
+  priceChange(changeContext: ChangeContext){
+    this.filterForm.get('min_price').setValue(changeContext.value)
+    this.filterForm.get('max_price').setValue(changeContext.highValue)
+    //console.log(changeContext.value,changeContext.highValue);    
+  }
+
+  applyFilters(){
+    
+    this.page.filters = this.filterForm.value
+    console.log('filters',this.page.filters )
+    this.setPage(this._defaultPagination, 'all');
   }
 
 

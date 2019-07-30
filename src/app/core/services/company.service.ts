@@ -26,12 +26,24 @@ export class CompanyService {
 
   companyListing(page:Page){
   
-    console.log('page',page)
+
     return this.firestore.collection<PagedData<Company>>('companies', ref => {
-      if(page.search.length>0){
-        return ref
-        .where("name",'==',page.search).orderBy(page.sortProperty, page.sortDirection)
+      
+      
+
+
+      if(page.search.length>0 || page.filters){
+        console.log('if');
+        let query : firebase.firestore.CollectionReference | firebase.firestore.Query = ref;     
+      if (page.search.length) { query = query.where('name', '==', page.search) };
+      if (page.filters.category) { query = query.where('category', '==', page.filters.category) };
+      if (page.filters.status) { query = query.where('status', '==', page.filters.status) };
+      if (page.filters.min_price) { query = query.where('price_for_two', '>=', page.filters.min_price) };
+      if (page.filters.max_price) { query = query.where('price_for_two', '<=', page.filters.max_price) };
+      console.log('query',query);
+      return query;
       }else{
+        console.log('else');
         return ref.orderBy(page.sortProperty, page.sortDirection)
       }
       
