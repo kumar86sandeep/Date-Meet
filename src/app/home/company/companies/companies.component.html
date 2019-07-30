@@ -11,8 +11,9 @@
    
 
       <div class="form-group col-md-6">
-        
-        <input (input)="onSearch($event.target.value)" style="border:1px solid; border-radius:25px;" class="form-control"  type="text" placeholder="Search by company name" >
+        <form [formGroup]="searchForm">
+          <input formControlName="search"   style="border:1px solid; border-radius:25px;" class="form-control"  type="text" placeholder="Search by company name" >
+        </form>
       </div>
 
       
@@ -139,10 +140,9 @@
  <!-- Column Templates -->
  <ngx-datatable-column
  [width]="50"
- [resizeable]="false"
  [sortable]="false"
  [draggable]="false"
- [canAutoResize]="false"
+
 >
  <ng-template
    let-row="row"
@@ -160,7 +160,7 @@
  </ng-template>
 </ngx-datatable-column>
 
-<ngx-datatable-column [width]="100" [sortable]="false" 
+<ngx-datatable-column  [sortable]="false" 
 [draggable]="false"  name="Logo">
   <ng-template
     let-rowIndex="rowIndex"
@@ -171,7 +171,7 @@
 </ngx-datatable-column>
 
 <ngx-datatable-column 
-[draggable]="false"  [width]="180" [sortable]="true" name="Name">
+[draggable]="false"  [sortable]="false" name="Name">
   <ng-template
     let-rowIndex="rowIndex"
     let-row="row"
@@ -184,9 +184,8 @@
 
 
 
-
 <ngx-datatable-column 
-[draggable]="false" [width]="100" [sortable]="true" name="Location">
+[draggable]="false"  [sortable]="false" name="Location">
   <ng-template
     let-rowIndex="rowIndex"
     let-row="row"
@@ -197,7 +196,7 @@
 </ngx-datatable-column>
 
 <ngx-datatable-column 
-[draggable]="false"[width]="100" prop="cost_for_two"  [sortable]="true" name="Cost for two">
+[draggable]="false" prop="cost_for_two"  [sortable]="false" name="Cost for two">
     <ng-template
       let-rowIndex="rowIndex"
       let-row="row"
@@ -211,7 +210,7 @@
   
 
   <ngx-datatable-column 
-  [draggable]="false" [width]="100" prop="status" [sortable]="true" name="Status">
+  [draggable]="false" prop="status" [sortable]="false" name="Status">
     <ng-template 
       let-row="row"
       ngx-datatable-cell-template
@@ -221,7 +220,7 @@
   </ngx-datatable-column>
 
   <ngx-datatable-column 
-  [draggable]="false" [width]="100" [sortable]="true"  prop="created_at" name="Created On">
+  [draggable]="false"  [sortable]="true"  prop="created_at" name="Created On">
       <ng-template
         let-row="row"
         let-value="value"
@@ -231,7 +230,7 @@
       </ng-template>
   </ngx-datatable-column>
   
-  <ngx-datatable-column [width]="100" [sortable]="false" 
+  <ngx-datatable-column  [sortable]="false" 
   [draggable]="false"  name="Action">
       <ng-template
         let-row="row"

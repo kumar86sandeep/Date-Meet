@@ -41,8 +41,8 @@
   >
     
   
-  <ngx-datatable-column [sortable]="false" [resizeable]="false"
-  [draggable]="false"  width="100" name="Image">
+  <ngx-datatable-column [sortable]="false" 
+  [draggable]="false"   name="Image">
     <ng-template
       let-rowIndex="rowIndex"
       let-row="row"
@@ -51,8 +51,8 @@
       <img style="height:34px;width:50px" src="{{ row.image }}">
     </ng-template>
   </ngx-datatable-column>
-  <ngx-datatable-column [resizeable]="false"
-  [draggable]="false"  width="120" [sortable]="false" name="Title">
+  <ngx-datatable-column 
+  [draggable]="false"  [sortable]="false" name="Title">
     <ng-template
       let-rowIndex="rowIndex"
       let-row="row"
@@ -62,8 +62,8 @@
     </ng-template>
   </ngx-datatable-column>
 
-  <ngx-datatable-column [resizeable]="false"
-  [draggable]="false" prop="category_id" [sortable]="false" width="100" name="Category">
+  <ngx-datatable-column 
+  [draggable]="false" prop="category_id" [sortable]="false" name="Category">
       <ng-template
         let-rowIndex="rowIndex"
         let-row="row"
@@ -73,8 +73,8 @@
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column [resizeable]="false"
-    [draggable]="false" prop="subcategory_id" [sortable]="false" width="150" name="Subcategory">
+    <ngx-datatable-column 
+    [draggable]="false" prop="subcategory_id" [sortable]="false" name="Subcategory">
       <ng-template
         let-rowIndex="rowIndex"
         let-row="row"
@@ -84,8 +84,8 @@
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column [resizeable]="false"
-    [draggable]="false" prop="status" [sortable]="false" width="80" name="Status">
+    <ngx-datatable-column
+    [draggable]="false" prop="status" [sortable]="false" name="Status">
       <ng-template
         let-rowIndex="rowIndex"
         let-row="row"
@@ -95,8 +95,8 @@
       </ng-template>
     </ngx-datatable-column>
     
-    <ngx-datatable-column [resizeable]="false"
-    [draggable]="false" width="140" [sortable]="true"  prop="created_at" name="Created On">
+    <ngx-datatable-column 
+    [draggable]="false"  [sortable]="true"  prop="created_at" name="Created On">
         <ng-template
           let-row="row"
           let-value="value"
@@ -107,7 +107,7 @@
     </ngx-datatable-column>
 
 
-    <ngx-datatable-column width="100" [sortable]="false" [resizeable]="false"
+    <ngx-datatable-column [sortable]="false" 
     [draggable]="false"  name="Action">
         <ng-template
           let-row="row"

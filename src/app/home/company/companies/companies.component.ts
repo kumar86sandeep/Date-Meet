@@ -4,7 +4,9 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { Subscription } from 'rxjs/Subscription';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Observable, throwError } from 'rxjs';
-import 'rxjs/add/operator/map'
+import "rxjs/add/operator/debounceTime";
+import "rxjs/add/operator/map";
+
 import { Angular5Csv } from 'angular5-csv/dist/Angular5-csv';
 
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -13,7 +15,7 @@ import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { AngularFireDatabase } from '@angular/fire/database';
 
 //services
-import { TitleService, CategoryService, CompanyService,  CommonUtilsService } from '../../../core/services'
+import { TitleService, CategoryService, CompanyService, CommonUtilsService } from '../../../core/services'
 
 //import models
 import { PagedData, Category, Subcategory, Company, Page } from '../../../core/services/models'
@@ -30,33 +32,34 @@ import * as Prism from 'prismjs';
 
 export class CompaniesComponent implements OnInit {
   @ViewChild('myTable') table: any;
-  @ViewChild('fileUploader') fileUploader:ElementRef;
+  @ViewChild('fileUploader') fileUploader: ElementRef;
   companyForm: FormGroup;
-  dataObject:any = {}
-  isLoading:boolean = false
-  isCollapsed:boolean = true
+  searchForm: FormGroup;
+  dataObject: any = {}
+  isLoading: boolean = false
+  isCollapsed: boolean = true
   page = new Page();
   showCropper = false;
   showCoverCropper = false
-  totalTrashed:any = 0
+  totalTrashed: any = 0
   companies = new Array<Company>()
   categories = new Array<Category>()
   subcategories = new Array<Subcategory>()
-  submitted:boolean = false
+  submitted: boolean = false
   imageChangedEvent: any = '';
   coverImageChangedEvent: any = '';
-  imageFileChanged:any = '';
+  imageFileChanged: any = '';
   croppedImage: any = '';
-  croppedCoverImage:any = '';
-  imageUrl:any = '';
-  interestIdToUpdate:any = '';
+  croppedCoverImage: any = '';
+  imageUrl: any = '';
+  interestIdToUpdate: any = '';
 
 
 
-   //Defined records limit and records limit options
-   currentPageLimit: number = environment.DEFAULT_RECORDS_LIMIT
-   readonly pageLimitOptions = environment.DEFAULT_PAGE_LIMIT_OPTIONS
-   
+  //Defined records limit and records limit options
+  currentPageLimit: number = environment.DEFAULT_RECORDS_LIMIT
+  readonly pageLimitOptions = environment.DEFAULT_PAGE_LIMIT_OPTIONS
+
 
   //default pagination settings
   private _defaultPagination = {
@@ -67,83 +70,49 @@ export class CompaniesComponent implements OnInit {
   }
 
 
-  
-  constructor(private categoryService:CategoryService, private companyService:CompanyService, private commonUtilsService:CommonUtilsService, private titleService: TitleService, private formBuilder: FormBuilder, private angularFirestore: AngularFirestore, private storage: AngularFireStorage) { 
+
+  constructor(private categoryService: CategoryService, private companyService: CompanyService, private commonUtilsService: CommonUtilsService, private titleService: TitleService, private formBuilder: FormBuilder, private angularFirestore: AngularFirestore, private storage: AngularFireStorage) {
     this.categoryService.allCategory().subscribe(
 
       //case success
-      (data) => {   
-      console.log('data',data);   
-      
-      this.categories =  [...data];   
-      console.log('categories',this.categories)
+      (data) => {
+        console.log('data', data);
 
-    //case error 
-    },error => {
-      this.commonUtilsService.onError(error);
-    });
-   }
- 
-   listSubcategory(event){
- 
-        this.categoryService.listSubcategory(event).subscribe(
-    
-          //case success
-          (data) => {   
-          console.log('data',data);   
-          
-          this.subcategories =  [...data];   
-          console.log('subcategories',this.subcategories)
-    
+        this.categories = [...data];
+        console.log('categories', this.categories)
+
         //case error 
-        },error => {
-          this.commonUtilsService.onError(error);
-        });
-      }
+      }, error => {
+        this.commonUtilsService.onError(error);
+      });
+  }
 
-  
-  async onSubmit(){
+  listSubcategory(event) {
+
+    this.categoryService.listSubcategory(event).subscribe(
+
+      //case success
+      (data) => {
+        console.log('data', data);
+
+        this.subcategories = [...data];
+        console.log('subcategories', this.subcategories)
+
+        //case error 
+      }, error => {
+        this.commonUtilsService.onError(error);
+      });
+  }
+
+
+  async onSubmit() {
     //console.log(this.interestForm.value)
     if (this.companyForm.invalid) {
       this.submitted = true
       return
     }
-    await this.saveUpdate()   
-  }
-  async logoImage(id){
-    let _this = this
-    let path = `companies/logo/${new Date().getTime()}.jpg`;
-        
-        await this.storage.ref(path).putString(this.croppedImage, 'data_url').then(function(snapshot) {
-          //console.log(snapshot);   
-          snapshot.ref.getDownloadURL().then(function(downloadURL) {
-            console.log("logo available at", downloadURL);
-          // _this.companyForm.get('logo').setValue(downloadURL)
-          // _this.dataObject['logo']     = downloadURL
-           // _this.saveUpdate(downloadURL)
-           _this.angularFirestore.collection('companies').doc(id).update({
-            logo:downloadURL
-           }) 
-          });     
-        });
-  }
-  async saveCoverImage(id){
-    let _this = this
-    let path = `companies/cover_image/${new Date().getTime()}.jpg`;
-        
-    await this.storage.ref(path).putString(this.croppedCoverImage, 'data_url').then(function(snapshot) {
-      //console.log(snapshot);   
-      snapshot.ref.getDownloadURL().then(function(downloadURL) {
-        console.log("Cover image available at", downloadURL);
-      // _this.companyForm.get('cover_image').setValue(downloadURL) 
-       //_this.dataObject['cover_image']     = downloadURL   
-       _this.angularFirestore.collection('companies').doc(id).update({
-        cover_image:downloadURL
-       })   
-      });     
-    }); 
-  }
-  saveUpdate(){
+    
+
     let _this = this
     this.dataObject['name'] = this.companyForm.get('name').value
     this.dataObject['headline'] = this.companyForm.get('headline').value
@@ -158,155 +127,198 @@ export class CompaniesComponent implements OnInit {
     this.dataObject['status'] = this.companyForm.get('status').value
     this.dataObject['created_by'] = this.companyForm.get('created_by').value
     this.dataObject['category_id'] = this.companyForm.get('category_id').value
-    this.dataObject['subcategory_id'] = this.companyForm.get('subcategory_id').value
-    
+    this.dataObject['subcategory_id'] = this.companyForm.get('subcategory_id').value   
+
    
-    //console.log('save',this.dataObject);
-      this.croppedImage = ''
-      this.croppedCoverImage = ''
-      this.showCropper = false
-      this.fileUploader.nativeElement.value = null;
-    
- 
-    if(this.interestIdToUpdate){      
-      this.dataObject['updated_at']= new Date().getTime() 
-      this.angularFirestore.collection('companies').doc(this.interestIdToUpdate).update(this.dataObject).then(function(snapshot){
-        //console.log('update',snapshot.id);
-        if(_this.croppedImage){
-          _this.logoImage(_this.interestIdToUpdate)
-        }
-        if(_this.croppedCoverImage){
-         _this.saveCoverImage(_this.interestIdToUpdate)
-       }
+    if (this.interestIdToUpdate) {
+       //update operation
+      this.dataObject['updated_at'] = new Date().getTime()
+      this.angularFirestore.collection('companies').doc(this.interestIdToUpdate).update(this.dataObject).then(async function (snapshot) {
+        await _this.uploadImage(_this.interestIdToUpdate)   
+        _this.commonUtilsService.onSuccess('Company updated');    
+        _this.initResetForm();     
       })
-      this.interestIdToUpdate='';   
-      this.commonUtilsService.onSuccess('Company updated'); 
-    }else{ 
-      this.dataObject['created_at']= new Date().getTime()  
-      this.dataObject['updated_at']= new Date().getTime() 
-       this.angularFirestore.collection('companies').add(this.dataObject).then(function(snapshot){
-         if(_this.croppedImage){
-           _this.logoImage(snapshot.id)
-         }
-         if(_this.croppedCoverImage){
-          _this.saveCoverImage(snapshot.id)
-        }
-        console.log('save',snapshot.id);
-      })
-     
-      this.commonUtilsService.onSuccess('Company added successfully.');      
+      
+      
+    } else {
+      //isert operation
+      this.dataObject['created_at'] = new Date().getTime()
+      this.dataObject['updated_at'] = new Date().getTime()
+      this.angularFirestore.collection('companies').add(this.dataObject).then(async function (snapshot) {
+        await _this.uploadImage(_this.interestIdToUpdate)            
+        _this.commonUtilsService.onSuccess('Company added successfully.');
+        _this.initResetForm();
+      })      
     }
+      
+
+  }
+  async uploadImage(id) {
+    let _this = this
+    if (_this.croppedImage) {
+      let path = `companies/logo/${new Date().getTime()}.jpg`;
+      await this.storage.ref(path).putString(this.croppedImage, 'data_url').then(function (snapshot) { 
+        snapshot.ref.getDownloadURL().then(function (downloadURL) {
+          console.log("logo available at", downloadURL);   
+          console.log('doc id',id);      
+          _this.angularFirestore.collection('companies').doc(id).update({
+            logo: downloadURL
+          })
+        });
+      });
+      
+    }
+    if (_this.croppedCoverImage) {
+      let path = `companies/cover_image/${new Date().getTime()}.jpg`;
+
+      await this.storage.ref(path).putString(this.croppedCoverImage, 'data_url').then(function (snapshot) {
+    
+        snapshot.ref.getDownloadURL().then(function (downloadURL) {
+          console.log("Cover image available at", downloadURL); 
+          console.log('doc id',id);         
+          _this.angularFirestore.collection('companies').doc(id).update({
+            cover_image: downloadURL
+          })
+        });
+      });
+      
+    }    
+  }
+ 
+ 
+
+  private initResetForm(){
+    this.croppedImage = ''
+    this.croppedCoverImage = ''
+    this.showCropper = false
+    this.fileUploader.nativeElement.value = null;
     this.isCollapsed = true
     this.companyForm.reset();
     this.dataObject = {}
     this.companyForm.get('created_by').setValue('admin')
-    this.companyForm.get('created_by').setValue(true)
+    this.companyForm.get('status').setValue(true)
     this.companyForm.get('category_id').setValue('')
-    this.subcategories=new Array<Subcategory>()
+    this.subcategories = new Array<Subcategory>()
     this.companyForm.get('subcategory_id').setValue('')
+
 
   }
   ngOnInit() {
-    this.companyForm = this.formBuilder.group({     
-      name: [null, [Validators.required]],
-      cover_image:[null],
-      logo:[null],
-      headline:[null,[Validators.required]],
-      location:[null,[Validators.required]],
-      category_id:[null,[Validators.required]],
-      subcategory_id:[null,[Validators.required]],      
-      working_hours_from:[null,[Validators.required]],
-      working_hours_to:[null,[Validators.required]],
-      cost_for_two:[null,[Validators.required]],
-      website:[null,[Validators.required]],
-      connect_instagram:[null],
-      connect_facebook:[null],
-      connect_google:[null],
-      status:[true], 
-      created_by:['admin'],          
+    this.searchForm = this.formBuilder.group({
+      search: [null]
     });
 
+    this.initSearchForm();
+    this.initCompanyForm();
+
     this.titleService.setTitle();
-    this.setPage(this._defaultPagination,'all');   
+
+    this.setPage(this._defaultPagination, 'all');
   }
 
-  
-  onSearch(searchValue : string):void {   
-    this.page.search = searchValue
-    this.setPage(this._defaultPagination,this.page.type);    
+  private initCompanyForm() {
+    this.companyForm = this.formBuilder.group({
+      name: [null, [Validators.required]],
+      cover_image: [null],
+      logo: [null],
+      headline: [null, [Validators.required]],
+      location: [null, [Validators.required]],
+      category_id: [null, [Validators.required]],
+      subcategory_id: [null, [Validators.required]],
+      working_hours_from: [null, [Validators.required]],
+      working_hours_to: [null, [Validators.required]],
+      cost_for_two: [null, [Validators.required]],
+      website: [null, [Validators.required]],
+      connect_instagram: [null],
+      connect_facebook: [null],
+      connect_google: [null],
+      status: [true],
+      created_by: ['admin'],
+    });
   }
+
+  private initSearchForm() {
+    let searchFormControl = this.searchForm.get('search')
+    searchFormControl.valueChanges.debounceTime(1000).subscribe((search) => {
+      this.page.search = search
+      this.setPage(this._defaultPagination, 'all');
+    })
+  }
+
+
+
 
   /**
    * Populate the table with new data based on the page number
    * @param page The page to select
    * @param type Result type (All, Active, Archived)
   */
-  setPage(page, type) {   
+  setPage(page, type) {
 
     this.page.type = type;
     this.page.pageNumber = page.offset;
     this.page.size = page.pageSize;
-    if(page.search && page.search.length<=0){
+    if (page.search && page.search.length <= 0) {
       this.isLoading = true
     }
-    
+
     this.isCollapsed = true
-    
+
     //hit api to fetch data
     this.companyService.companyListing(this.page).subscribe(
 
       //case success
-      (pagedData) => {   
-      console.log('pagedData',pagedData);   
-      this.page = pagedData.page;
-      this.companies =  [...pagedData.data];   
-      //console.log('companies',this.companies)
-      this.isLoading = false
-    //case error 
-    },error => {
-      console.log(error)
-      this.commonUtilsService.onError(error);
-    });
+      (pagedData) => {
+        console.log('pagedData', pagedData);
+        this.page = pagedData.page;
+        this.companies = [...pagedData.data];
+        //console.log('companies',this.companies)
+        this.isLoading = false
+        //case error 
+      }, error => {
+        console.log(error)
+        this.commonUtilsService.onError(error);
+      });
   }
 
-/**
-  * Delete a car
-  * @param $item    item is car object(selected) to delete
-  * Before delete, system confirm to delete the car. If yes opted then process deleting car else no action;
-  */
-    async delete(companyId){
+  /**
+    * Delete a car
+    * @param $item    item is car object(selected) to delete
+    * Before delete, system confirm to delete the car. If yes opted then process deleting car else no action;
+    */
+  async delete(companyId) {
 
-      //confirm before deleting car
-      if(! await this.commonUtilsService.isDeleteConfirmed()) {
-        return;
-      } 
-      this.angularFirestore.doc('companies/' + companyId).delete(); 
-      this.commonUtilsService.onSuccess('Company deleted'); 
-
+    //confirm before deleting car
+    if (! await this.commonUtilsService.isDeleteConfirmed()) {
+      return;
     }
+    this.angularFirestore.doc('companies/' + companyId).delete();
+    this.commonUtilsService.onSuccess('Company deleted');
 
-    async populateEditForm(company){
-      await this.listSubcategory(company.category_id)
-  this.isCollapsed = false;
-  window.scrollTo(0,document.body.scrollHeight);
+  }
+
+  async populateEditForm(company) {
+    await this.listSubcategory(company.category_id)
+    this.isCollapsed = false;
+    window.scrollTo(0, document.body.scrollHeight);
     this.interestIdToUpdate = company.id
     //this.imageUrl = interest.image
-    console.log('company',company);
-    this.companyForm.patchValue( company )
+    console.log('company', company);
+    this.companyForm.patchValue(company)
   }
 
   //cpver image
-  coverFileChangeEvent(event: any):void{
+  coverFileChangeEvent(event: any): void {
     this.coverImageChangedEvent = event
   }
   //logo image
   fileChangeEvent(event: any): void {
-        this.imageChangedEvent = event;
+    this.imageChangedEvent = event;
   }
   imageCropped(event: ImageCroppedEvent) {
 
-      this.croppedImage = event.base64;
-      // this.imageUrl = event.base64
+    this.croppedImage = event.base64;
+    // this.imageUrl = event.base64
 
   }
   coverImageCropped(event: ImageCroppedEvent) {
@@ -316,26 +328,26 @@ export class CompaniesComponent implements OnInit {
 
   }
   imageLoaded() {
-      // show cropper
-      this.showCropper = true;
+    // show cropper
+    this.showCropper = true;
 
   }
   coverImageLoaded() {
     // show cropper
     this.showCoverCropper = true;
 
-}
-toggleExpandRow(row) {
-  console.log('Toggled Expand Row!', row);
-  this.table.rowDetail.toggleExpandRow(row);
-}
-onDetailToggle(event) {
-  console.log('Detail Toggled', event);
-}
+  }
+  toggleExpandRow(row) {
+    console.log('Toggled Expand Row!', row);
+    this.table.rowDetail.toggleExpandRow(row);
+  }
+  onDetailToggle(event) {
+    console.log('Detail Toggled', event);
+  }
 
-/**
-   * download the list of all purchases in csv
-   */
+  /**
+     * download the list of all purchases in csv
+     */
   downloadCsv() {
 
     if (this.companies.length == 0)
@@ -358,14 +370,14 @@ onDetailToggle(event) {
         location: company.location,
         cost_for_two: company.cost_for_two,
         status: company.status,
-        created_at: company.created_at,       
+        created_at: company.created_at,
       };
       data.push(purchaseObj);
     });
-console.log(data);
+    console.log(data);
     //pass data and options to download csv
     new Angular5Csv(data, 'Company List', options);
   }
-    
+
 
 }
