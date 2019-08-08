@@ -1,11 +1,13 @@
 <div class="hold-transition login-page">
   <div class="login-box">
-    <div class="login-logo">
-      <a routerLink="/"><b>Admin</b> Login</a>
-    </div>
+    
     <!-- /.login-logo -->
     <div class="login-box-body">
-      <p class="login-box-msg">Sign in to start your session</p>
+	<div class="login-logo">
+	<a href="#" class="c_logo"><img src="assets/img/logo.png"></a>
+	
+    </div>
+      <div class="login_head">Sign in to start your session</div>
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <div class="form-group has-feedback">
