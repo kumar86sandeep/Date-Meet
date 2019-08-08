@@ -1,133 +1,83 @@
-<mk-box [isLoading]="isLoading" header="Interests Listing" [isCollapsable]="true" [isRemovable]="false">
-    
-    <div class="box-body pad15">
-      <div class="row">
-         
+<mk-box [isLoading]="isLoading" header="Interests Listing" [isCollapsable]="false" [isRemovable]="false">
 
-        <div class="left_col">
-          <label>Total Interests <span>({{page.totalElements}})</span></label>
-             <a class="trashed_text" routerLink="trashed">Trashed Interests <span>({{totalTrashed}})</span></a>      
-        </div>
-        
+  <div class="box-body pad15">
+    <div class="row">
 
-        <div class="searchBar_col">
-        
-          <input (input)="onSearch($event.target.value)" class="form-control"  type="text" placeholder="Search by title" >
-        </div>
 
-        
-        
-
+      <div class="left_col">
+        <label>Total Interests <span>({{page.totalElements}})</span></label>
+        <a class="trashed_text" routerLink="trashed">Trashed Interests <span>({{totalTrashed}})</span></a>
       </div>
+
+
+      <div class="searchBar_col">
+
+        <input (input)="onSearch($event.target.value)" class="form-control" type="text" placeholder="Search by title">
+      </div>
+
+
+
+
     </div>
+  </div>
 
-  <ngx-datatable
-    #myTable
-    class="bootstrap"   
-    [count]="page.totalElements" 
-    [offset]="page.pageNumber"
-    [limit]="page.size"   
-    [headerHeight]="50"
-    [footerHeight]="50"
-    [rowHeight]="50"
-    [externalPaging]="true"      
-    [rows]="interests"
-    [sorts]="[{prop: 'created_at', dir: 'desc'}]"    
-    (page)="setPage($event,'all')"
-    (sort)="onSort($event)"
-  >
-    
-  
-  <ngx-datatable-column [sortable]="false" 
-  [draggable]="false"   name="Image"> 
-    <ng-template
-      let-rowIndex="rowIndex"
-      let-row="row"
-      ngx-datatable-cell-template
-    >
-      <img style="height:34px;width:50px" src="{{ row.image }}">
-    </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column 
-  [draggable]="false"  [sortable]="false" name="Title">
-    <ng-template
-      let-rowIndex="rowIndex"
-      let-row="row"
-      ngx-datatable-cell-template
-    >
-      {{ row.title }}
-    </ng-template>
-  </ngx-datatable-column>
-  
-  
-  
-  
-  
+  <ngx-datatable #myTable class="bootstrap" [count]="page.totalElements" [offset]="page.pageNumber" [limit]="page.size"
+    [headerHeight]="50" [footerHeight]="50" [rowHeight]="50" [externalPaging]="true" [rows]="interests"
+    [sorts]="[{prop: 'created_at', dir: 'desc'}]" (page)="setPage($event,'all')" (sort)="onSort($event)">
 
-  <ngx-datatable-column 
-  [draggable]="false" prop="category_id" [sortable]="false" name="Category">
-      <ng-template
-        let-rowIndex="rowIndex"
-        let-row="row"
-        ngx-datatable-cell-template
-      >
+   
+
+    <ngx-datatable-column [sortable]="false" [draggable]="false" name="Image">
+      <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
+        <img style="height:34px;width:50px" src="{{ row.image }}">
+      </ng-template>
+    </ngx-datatable-column>
+
+
+
+
+
+
+    <ngx-datatable-column [draggable]="false" prop="category_id" [sortable]="false" name="Category">
+      <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
         {{ row.category }}
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column 
-    [draggable]="false" prop="subcategory_id" [sortable]="false" name="Subcategory">
-      <ng-template
-        let-rowIndex="rowIndex"
-        let-row="row"
-        ngx-datatable-cell-template
-      >
+    <ngx-datatable-column [draggable]="false" prop="subcategory_id" [sortable]="false" name="Subcategory">
+      <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
         {{ row.subcategory }}
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column
-    [draggable]="false" prop="status" [sortable]="false" name="Status">
-      <ng-template
-        let-rowIndex="rowIndex"
-        let-row="row"
-        ngx-datatable-cell-template
-      >
+    <ngx-datatable-column [draggable]="false" prop="status" [sortable]="false" name="Status">
+      <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
         {{ row.status }}
       </ng-template>
     </ngx-datatable-column>
-    
-    <ngx-datatable-column 
-    [draggable]="false"  [sortable]="true"  prop="created_at" name="Created On">
-        <ng-template
-          let-row="row"
-          let-value="value"
-          ngx-datatable-cell-template
-        >
+
+    <ngx-datatable-column [draggable]="false" [sortable]="true" prop="created_at" name="Created On">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
         {{ row.created_at | date:'MM-dd-yy, h:mm a' }}
-        </ng-template>
+      </ng-template>
     </ngx-datatable-column>
 
 
-    <ngx-datatable-column [sortable]="false" 
-    [draggable]="false"  name="Action">
-        <ng-template
-          let-row="row"
-          let-value="value"
-          ngx-datatable-cell-template
-        >
-        <a href="javascript:void(0)" (click)="populateEditForm(row)"><i class="fa fa-edit"></i></a> | <a (click)="delete(row.id)"href="javascript:void(0)"><i class="fa fa-trash"></i></a>
-        </ng-template>
+    <ngx-datatable-column [sortable]="false" [draggable]="false" name="Action">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <a href="javascript:void(0)" (click)="populateEditForm(row)"><i class="fa fa-edit"></i></a> | <a
+          (click)="delete(row.id)" href="javascript:void(0)"><i class="fa fa-trash"></i></a>
+      </ng-template>
     </ngx-datatable-column>
 
-    
+
 
 
   </ngx-datatable>
 
 </mk-box>
 
-<mk-box [isCollapsed]="isCollapsed"  header="{{(interestIdToUpdate)?'Update':'Add'}} Interest" [isCollapsable]="true" [isRemovable]="false">
+<!--<mk-box [isCollapsed]="isCollapsed"  header="{{(interestIdToUpdate)?'Update':'Add'}} Interest" [isCollapsable]="true" [isRemovable]="false">
 
   
   <form [formGroup]="interestForm" (ngSubmit)="onSubmit()">
@@ -193,13 +143,10 @@
                   </div>
                  
                 </div>
-                <!-- /.box-body -->
+               
   
                 <div class="box-footer">
                   <button type="submit" [disabled]="!interestForm.valid" [ngClass]="{ 'submit-btn-disable': !interestForm.valid }" class="btn btn-primary">{{(interestIdToUpdate)?'Update':'Add'}}  Interest</button>
                 </div>
               </form>
-  </mk-box>
-  
-
-  
+  </mk-box>-->

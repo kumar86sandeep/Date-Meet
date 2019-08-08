@@ -8,7 +8,7 @@ export class Category {
     constructor(object) {
         this.id = object.id;   
         this.title = object.data().title   
-        this.status = (object.data().status)?'Active':'Inactive'  
+        this.status = (object.data().status=="true")?'Active':'Inactive'  
         this.created_at = new Date(object.data().created_at) 
       
       

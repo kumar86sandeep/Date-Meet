@@ -23,21 +23,22 @@ import * as firebase from 'firebase';
   styleUrls: ['./categories.component.css']
 })
 export class CategoriesComponent implements OnInit {
-	
+
   page = new Page();
-  isLoading:boolean = false
-  isCollapsed:boolean = true
-  	categories = new Array<Category>()
+  isLoading: boolean = false
+  isCollapsed: boolean = true
+  //categories = new Array<Category>()
+  categories:any = []
 
-  	addCategoryForm: FormGroup;
-  	submitted:boolean = false
+  addCategoryForm: FormGroup;
+  submitted: boolean = false
 
-  	categoryIdToUpdate = '';
+  categoryIdToUpdate = '';
 
-   //Defined records limit and records limit options
-   currentPageLimit: number = environment.DEFAULT_RECORDS_LIMIT
-   readonly pageLimitOptions = environment.DEFAULT_PAGE_LIMIT_OPTIONS
-  
+  //Defined records limit and records limit options
+  currentPageLimit: number = environment.DEFAULT_RECORDS_LIMIT
+  readonly pageLimitOptions = environment.DEFAULT_PAGE_LIMIT_OPTIONS
+
 
   //default pagination settings
   private _defaultPagination = {
@@ -47,20 +48,37 @@ export class CategoriesComponent implements OnInit {
     pageSize: this.currentPageLimit
   }
 
-  constructor(private commonUtilsService:CommonUtilsService, private categoryService:CategoryService, private titleService: TitleService, private formBuilder: FormBuilder, private angularFirestore: AngularFirestore) { }
+  constructor(private commonUtilsService: CommonUtilsService, private categoryService: CategoryService, private titleService: TitleService, private formBuilder: FormBuilder, private angularFirestore: AngularFirestore) { }
 
   ngOnInit() {
-  	this._initalizeAddCategoryForm()
-  	//setting the page title
+    this._initalizeAddCategoryForm()
+    //setting the page title
     this.titleService.setTitle();
-  	this.setPage(this._defaultPagination,'all');
+    //this.setPage(this._defaultPagination, 'all');
+    this.isLoading = true
+    this.categoryService.listing(this.page).subscribe(
+      
+      //case success
+      (pagedData) => {
+        console.log('pagedData', pagedData);
+       
+        this.categories = [...pagedData];
+        console.log('categories', this.categories)
+        this.isLoading = false
+        //case error 
+      }, error => {
+        this.isLoading = false
+        this.commonUtilsService.onError(error);
+    });
+
+
   }
-  private _initalizeAddCategoryForm(){
-  	this.addCategoryForm = this.formBuilder.group({
+  private _initalizeAddCategoryForm() {
+    this.addCategoryForm = this.formBuilder.group({
       title: ['', [Validators.required]],
-      status:[true],
+      status: [true],
       /*created_at: [new Date().getTime()],
-      updated_at: [new Date().getTime()]  */     
+      updated_at: [new Date().getTime()]  */
     });
   }
   /**
@@ -68,68 +86,68 @@ export class CategoriesComponent implements OnInit {
    * @param page The page to select
    * @param type Result type (All, Active, Archived)
   */
-  setPage(page, type) {   
+  setPage(page, type) {
 
     this.page.type = type;
     this.page.pageNumber = page.offset;
     this.page.size = page.pageSize;
     this.isLoading = true
-    
+
     //hit api to fetch data
     this.categories = new Array<Category>()
     this.categoryService.listing(this.page).subscribe(
 
       //case success
-      (pagedData) => {   
-      console.log('pagedData',pagedData);   
-      this.page = pagedData.page;
-      this.categories =  [...pagedData.data];   
-    	console.log('categories',this.categories)
-      this.isLoading = false
-    //case error 
-    },error => {
-      this.commonUtilsService.onError(error);
-    });
+      (pagedData) => {
+        console.log('pagedData', pagedData);
+        this.page = pagedData.page;
+        this.categories = [...pagedData.data];
+        console.log('categories', this.categories)
+        this.isLoading = false
+        //case error 
+      }, error => {
+        this.commonUtilsService.onError(error);
+      });
   }
 
-  onAddCategory(){
-  	if (this.addCategoryForm.invalid) {
+  onAddCategory() {
+    if (this.addCategoryForm.invalid) {
       this.submitted = true
       return
     }
-    if(this.categoryIdToUpdate){
-    	this.angularFirestore.collection('categories').doc(this.categoryIdToUpdate).update({
-        title:this.addCategoryForm.get('title').value,
-        status:this.addCategoryForm.get('status').value,
-        
+    if (this.categoryIdToUpdate) {
+      this.angularFirestore.collection('categories').doc(this.categoryIdToUpdate).update({
+        title: this.addCategoryForm.get('title').value,
+        status: this.addCategoryForm.get('status').value,
+
       })
-    	this.categoryIdToUpdate='';
-    	//this.addCategoryForm.reset();
-    	this.commonUtilsService.onSuccess('Category updated'); 
-    }else{
-    	this.angularFirestore.collection('categories').add({
-        title:this.addCategoryForm.get('title').value,
-        status:this.addCategoryForm.get('status').value  ,
-        created_at:new Date().getTime()    
+      this.categoryIdToUpdate = '';
+      //this.addCategoryForm.reset();
+      this.commonUtilsService.onSuccess('Category updated');
+    } else {
+      this.angularFirestore.collection('categories').add({
+        title: this.addCategoryForm.get('title').value,
+        status: this.addCategoryForm.get('status').value,
+        created_at: new Date().getTime()
       })
-    //	this.addCategoryForm.reset();
-    	this.commonUtilsService.onSuccess('Category added'); 
+      //	this.addCategoryForm.reset();
+      this.commonUtilsService.onSuccess('Category added');
     }
     this.isCollapsed = true
     this._initalizeAddCategoryForm()
 
     this.addCategoryForm.get('title').setValue('')
-    this.addCategoryForm.get('status').setValue(true)  
-    
+    this.addCategoryForm.get('status').setValue(true)
+
   }
 
-  populateEditForm(category){
+  populateEditForm(category) {
     this.isCollapsed = false
-  	this.categoryIdToUpdate = category.id
-  	this.addCategoryForm.patchValue({
-      title:category.title,
-      status:(category.status=='Active')?true:false  	
-  	})
+    this.categoryIdToUpdate = category.id
+    this.addCategoryForm.patchValue({
+      title: category.title,
+      status: (category.status == 'Active') ? true : false
+    })
   }
 
   /**
@@ -137,13 +155,13 @@ export class CategoriesComponent implements OnInit {
   * @param $item    item is car object(selected) to delete
   * Before delete, system confirm to delete the car. If yes opted then process deleting car else no action;
   */
-    async delete(categoryId){
+  async delete(categoryId) {
 
-      //confirm before deleting car
-      if(! await this.commonUtilsService.isDeleteConfirmed()) {
-        return;
-      } 
-      this.angularFirestore.doc('categories/' + categoryId).delete(); 
-      this.commonUtilsService.onSuccess('Category deleted'); 
-    }  
+    //confirm before deleting car
+    if (! await this.commonUtilsService.isDeleteConfirmed()) {
+      return;
+    }
+    this.angularFirestore.doc('categories/' + categoryId).delete();
+    this.commonUtilsService.onSuccess('Category deleted');
+  }
 }

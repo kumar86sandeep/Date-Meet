@@ -1,24 +1,23 @@
 <mk-box  [isLoading]="isLoading" header="Category Listing" [isCollapsable]="true" [isRemovable]="false">
   
  
+
   <ngx-datatable
-    #myTable
-    class="bootstrap"   
-    [count]="page.totalElements" 
-    [offset]="page.pageNumber"
-    [limit]="page.size"   
-    [headerHeight]="50"
-    [footerHeight]="50"
-    [rowHeight]="50"
-    [externalPaging]="true"      
-    [rows]="categories"
-    [sorts]="[{prop: 'created_at', dir: 'desc'}]"
-    (page)="setPage($event,'all')"
-  >
+  #myTable
+  class="bootstrap"
+  [limit]="6"
+  [rows]="categories"
+  [columnMode]="'force'"
+  [headerHeight]="50"
+  [footerHeight]="50"
+  [rowHeight]="50"
+
+  [sorts]="[{prop: 'created_at', dir: 'desc'}]">
+
     
-  
+   
     <ngx-datatable-column [resizeable]="false"
-    [draggable]="false"  width="250" [sortable]="false"  name="Category name">
+    [draggable]="false"  width="250"   name="Category name">
       <ng-template
         let-rowIndex="rowIndex"
         let-row="row"
@@ -29,7 +28,7 @@
     </ngx-datatable-column>
     
     <ngx-datatable-column [resizeable]="false"
-    [draggable]="false"   width="250" [sortable]="false" name="Status">
+    [draggable]="false"   width="250"  name="Status">
       <ng-template
         let-rowIndex="rowIndex"
         let-row="row"
@@ -40,7 +39,7 @@
     </ngx-datatable-column>
 
     <ngx-datatable-column [resizeable]="false"
-    [draggable]="false"  width="230"  [sortable]="true" prop="created_at" name="Created On">
+    [draggable]="false"  width="230"   prop="created_at" name="Created On">
         <ng-template
           let-row="row"
           let-value="value"
@@ -80,7 +79,7 @@
       </div>
 
       <div class="form-group">
-        <label>Select status*</label>
+        <label>Select status</label>
         <select formControlName="status" class="form-control">
           <option value="true">Active</option>
           <option value="false">Inactive</option>
