@@ -5,7 +5,9 @@
 export const environment = {
   production: false,
   API_ENDPOINT: 'http://54.245.128.14:3000',
-  WEB_ENDPOINT: 'http://localhost:4200',
+  //WEB_ENDPOINT: 'http://localhost:4200',
+  WEB_ENDPOINT: 'dating-app-def07.firebaseapp.com',
+  
   APP_NAME: 'Date & Meet',
   DEFAULT_RECORDS_LIMIT: 6,
   DEFAULT_PAGES_PAGINATION: 5, //Defines the maximum number of page links to display

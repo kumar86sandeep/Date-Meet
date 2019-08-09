@@ -103,12 +103,12 @@ app-documents .dropzone_area .dropzone.file.btn {border-style: dotted !important
 
 
 /* -----M.S. Css------ */
-.login-page, .register-page {background:#fff;}
-.login_head {font-size:25px; font-size:500; padding:0px 0px 30px 0px; text-align:center; color:#000;}
-.form-group input{border-radius: 2px !important;height: 46px;}
-.btn.btn-flat {border-radius: 50px;height: 50px;font-size: 18px;background: linear-gradient(90deg, #FBB040 0%, #FFD100 100.09%); border:0px;}
-.login-box-body, .register-box-body{box-shadow: 0px 0px 31px 0px rgba(0,0,0,0.07); padding:50px 100px;}
-.login-box, .register-box {width: 40%;}
+app-login .login-page, .register-page {background:#fff;}
+app-login .login_head {font-size:25px; font-size:500; padding:0px 0px 30px 0px; text-align:center; color:#000;}
+app-login .form-group input{border-radius: 2px !important;height: 46px;}
+app-login .btn.btn-flat {border-radius: 50px;height: 50px;font-size: 18px;background: linear-gradient(90deg, #FBB040 0%, #FFD100 100.09%); border:0px;}
+app-login .login-box-body, .register-box-body{box-shadow: 0px 0px 31px 0px rgba(0,0,0,0.07); padding:50px 100px;}
+app-login .login-box, .register-box {width: 40%;}
 /* ----------- */
 .main-header .logo {height:60px;}
 .main-sidebar {padding-top:60px;}
