@@ -72,7 +72,10 @@
             let-value="value"
             ngx-datatable-cell-template
           >
-          <a href="javascript:void(0)" (click)="populateEditForm(row)"><i class="fa fa-edit"></i></a> | <a (click)="delete(row.id)"href="javascript:void(0)"><i class="fa fa-trash"></i></a>
+          
+
+          <div class="icon"><a href="javascript:void(0)" (click)="populateEditForm(row)"><i class="fa fa-edit"></i></a>  <a (click)="delete(row.id)"href="javascript:void(0)"><i class="fa fa-trash"></i></a></div>
+
           </ng-template>
       </ngx-datatable-column>
   
@@ -88,6 +91,7 @@
   
     <form [formGroup]="interestForm" (ngSubmit)="onSubmit()">
                   <div class="box-body">
+                    <div class="form_left_col">
                     <div class="form-group">
                       <label>Select Category</label>
                       <select formControlName="category_id" class="form-control">
@@ -135,13 +139,14 @@
               ></image-cropper>
                       <img [src]="imageUrl" />
                     </div>
-                   
+                  </div>
                   </div>
                   <!-- /.box-body -->
-    
+                  <div class="clear"></div>
+
                   <div class="box-footer">
                     <button type="submit" [disabled]="!interestForm.valid" [ngClass]="{ 'submit-btn-disable': !interestForm.valid }" class="btn btn-primary">Add Interest</button>
                   </div>
-                </form>
+    </form>
     </mk-box>
   

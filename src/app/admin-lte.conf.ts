@@ -9,7 +9,9 @@ export const adminLteConf = {
   // isSidebarRightOverContent: true,
   // layout: 'normal',
   sidebarLeftMenu: [
+   // { label: 'Dashboard', iconClasses: 'fa fa-th-list', route: 'admin/interest' },
     { label: 'MAIN NAVIGATION', separator: true },
+    {label: 'Dashboard', route: 'admin/interest', iconClasses: 'fa fa-th-list'},
     
     {
       label: 'Interests', iconClasses: 'fa fa-th-list', children: [   

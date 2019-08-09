@@ -1,4 +1,4 @@
-<mk-box [isLoading]="isLoading" header="Interests Listing" [isCollapsable]="true" [isRemovable]="false">
+<mk-box [isLoading]="isLoading" header="Interests Listing" [isCollapsable]="false" [isRemovable]="false">
     
     <div class="box-body pad15">
       <div class="row border-Col">
@@ -38,28 +38,8 @@
   >
     
   
-  <ngx-datatable-column [sortable]="false" 
-  [draggable]="false"   name="Image"> 
-    <ng-template
-      let-rowIndex="rowIndex"
-      let-row="row"
-      ngx-datatable-cell-template
-    >
-      <img style="height:34px;width:50px" src="{{ row.image }}">
-    </ng-template>
-  </ngx-datatable-column>
-  <ngx-datatable-column 
-  [draggable]="false"  [sortable]="false" name="Title">
-    <ng-template
-      let-rowIndex="rowIndex"
-      let-row="row"
-      ngx-datatable-cell-template
-    >
-      {{ row.title }}
-    </ng-template>
-  </ngx-datatable-column>
-  
-  
+
+
   
   
   
@@ -83,6 +63,17 @@
         ngx-datatable-cell-template
       >
         {{ row.subcategory }}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column
+    [draggable]="false" prop="status" [sortable]="false" name="People are using it">
+      <ng-template
+        let-rowIndex="rowIndex"
+        let-row="row"
+        ngx-datatable-cell-template
+      >
+        0
       </ng-template>
     </ngx-datatable-column>
 
@@ -126,80 +117,5 @@
   </ngx-datatable>
 
 </mk-box>
-
-<mk-box [isCollapsed]="isCollapsed"  header="{{(interestIdToUpdate)?'Update':'Add'}} Interest" [isCollapsable]="true" [isRemovable]="false">
-
-  
-  <form [formGroup]="interestForm" (ngSubmit)="onSubmit()">
-                <div class="box-body">
-                  <div class="form-group">
-                    <label>Select category*</label>
-                    <select formControlName="category_id" (change)="listSubcategory($event.target.value)" class="form-control">
-                      <option value="">Select category</option>
-                      <option *ngFor="let category of categories" value="{{category.title}}">{{category.title}}</option>
-                    </select>
-                    <p *ngIf="interestForm.controls.category_id.touched || submitted">
-                      <app-form-validation-errors errorPrefix="Category " [errors]="interestForm.get('category_id').errors"></app-form-validation-errors>
-                    </p>
-                  </div>
-
-                  <div class="form-group">
-                    <label>Select subcategory*</label>
-                    <select multiple formControlName="subcategory_id" class="form-control">
-                      <option value="">Select subcategory</option>
-                      <option *ngFor="let subcategory of subcategories" value="{{subcategory.title}}">{{subcategory.title}}</option>
-                    </select>
-                    <p *ngIf="interestForm.controls.subcategory_id.touched || submitted">
-                      <app-form-validation-errors errorPrefix="Subcategory " [errors]="interestForm.get('subcategory_id').errors"></app-form-validation-errors>
-                    </p>
-                  </div>
-  
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">Interest title*</label>
-                    <input formControlName="title" type="text" class="form-control"  placeholder="Enter interest title">
-                    <p *ngIf="interestForm.controls.title.touched || submitted">
-                      <app-form-validation-errors errorPrefix="Intertest title " [errors]="interestForm.get('title').errors"></app-form-validation-errors>
-                    </p>
-                  </div>
-
-                  <div class="form-group">
-                    <label>Select status*</label>
-                    <select formControlName="status" class="form-control">
-                      <option value="Active">Active</option>
-                      <option value="Inactive">Inactive</option>
-                    </select>
-                    
-                  </div>
-                 
-                  <div class="form-group">
-                    <label for="exampleInputFile">File input</label>
-                    <input type="file" #fileUploader accept="image/*" (change)="fileChangeEvent($event)">
-  
-                    <p *ngIf="croppedImage" class="help-block">Please crop image.</p>
-                    <image-cropper
-                    
-                [imageChangedEvent]="imageChangedEvent"
-                [maintainAspectRatio]="true"
-                [aspectRatio]="16 / 9"             
-                [resizeToWidth]="128"
-                format="png"
-                (imageCropped)="imageCropped($event)"
-                (imageLoaded)="imageLoaded()"
-                (cropperReady)="cropperReady()"
-                [style.display]="showCropper ? null : 'none'"
-                (loadImageFailed)="loadImageFailed()"
-            ></image-cropper>
-                    <img [src]="croppedImage" />
-                  </div>
-                 
-                </div>
-                <!-- /.box-body -->
-  
-                <div class="box-footer">
-                  <button type="submit" [disabled]="!interestForm.valid" [ngClass]="{ 'submit-btn-disable': !interestForm.valid }" class="btn btn-primary">{{(interestIdToUpdate)?'Update':'Add'}}  Interest</button>
-                </div>
-              </form>
-  </mk-box>
-  
 
   

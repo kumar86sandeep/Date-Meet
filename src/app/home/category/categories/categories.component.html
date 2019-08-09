@@ -1,79 +1,55 @@
-<mk-box  [isLoading]="isLoading" header="Category Listing" [isCollapsable]="true" [isRemovable]="false">
-  
- 
-  <ngx-datatable
-    #myTable
-    class="bootstrap"   
-    [count]="page.totalElements" 
-    [offset]="page.pageNumber"
-    [limit]="page.size"   
-    [headerHeight]="50"
-    [footerHeight]="50"
-    [rowHeight]="50"
-    [externalPaging]="true"      
-    [rows]="categories"
-    [sorts]="[{prop: 'created_at', dir: 'desc'}]"
-    (page)="setPage($event,'all')"
-  >
-    
-  
-    <ngx-datatable-column [resizeable]="false"
-    [draggable]="false"  width="250" [sortable]="false"  name="Category name">
-      <ng-template
-        let-rowIndex="rowIndex"
-        let-row="row"
-        ngx-datatable-cell-template
-      >
+<mk-box [isLoading]="isLoading" header="Category Listing" [isCollapsable]="true" [isRemovable]="false">
+
+
+  <ngx-datatable #myTable class="bootstrap" [count]="page.totalElements" [offset]="page.pageNumber" [limit]="page.size"
+    [headerHeight]="50" [footerHeight]="50" [rowHeight]="50" [externalPaging]="true" [rows]="categories"
+    [sorts]="[{prop: 'created_at', dir: 'desc'}]" (page)="setPage($event,'all')">
+
+
+    <ngx-datatable-column [resizeable]="false" [draggable]="false" width="250" [sortable]="false" name="Category name">
+      <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
         {{ row.title }}
       </ng-template>
     </ngx-datatable-column>
-    
-    <ngx-datatable-column [resizeable]="false"
-    [draggable]="false"   width="250" [sortable]="false" name="Status">
-      <ng-template
-        let-rowIndex="rowIndex"
-        let-row="row"
-        ngx-datatable-cell-template
-      >
+
+    <ngx-datatable-column [resizeable]="false" [draggable]="false" width="250" [sortable]="false" name="Status">
+      <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
         {{ row.status }}
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column [resizeable]="false"
-    [draggable]="false"  width="230"  [sortable]="true" prop="created_at" name="Created On">
-        <ng-template
-          let-row="row"
-          let-value="value"
-          ngx-datatable-cell-template
-        >
+    <ngx-datatable-column [resizeable]="false" [draggable]="false" width="230" [sortable]="true" prop="created_at"
+      name="Created On">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
         {{ row.created_at | date:'MM-dd-yy, h:mm a' }}
-        </ng-template>
+      </ng-template>
     </ngx-datatable-column>
 
-     
 
-    <ngx-datatable-column [resizeable]="false"
-    [draggable]="false"   width="200" [sortable]="true" name="Action">
-        <ng-template
-          let-row="row"
-          let-value="value"
-          ngx-datatable-cell-template
-        >
-        <a href="javascript:void(0)" (click)="populateEditForm(row)"><i class="fa fa-edit"></i></a> | <a (click)="delete(row.id)"href="javascript:void(0)"><i class="fa fa-trash"></i></a>
-        </ng-template>
+
+    <ngx-datatable-column [resizeable]="false" [draggable]="false" width="200" [sortable]="true" name="Action">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        
+
+          <div class="icon"><a href="javascript:void(0)" (click)="populateEditForm(row)"><i class="fa fa-edit"></i></a>  <a
+            (click)="delete(row.id)" href="javascript:void(0)"><i class="fa fa-trash"></i></a></div>
+
+      </ng-template>
     </ngx-datatable-column>
 
-    
+
 
 
   </ngx-datatable>
 
 </mk-box>
 
-<mk-box [isCollapsed]="isCollapsed" header="{{(categoryIdToUpdate)?'Update':'Add'}} Category"  [isRemovable]="false">
-  
-  <form [formGroup]="addCategoryForm" (ngSubmit)="onAddCategory()" >
-      <div class="box-body">
+<mk-box [isCollapsed]="isCollapsed" header="{{(categoryIdToUpdate)?'Update':'Add'}} Category" [isRemovable]="false">
+
+  <form [formGroup]="addCategoryForm" (ngSubmit)="onAddCategory()">
+    <div class="box-body">
+
+        <div class="form_left_col">
       <div class="form-group">
         <label for="title">Category name*:</label>
         <input type="text" formControlName="title" class="form-control" id="title" placeholder="Category title">
@@ -85,15 +61,17 @@
           <option value="true">Active</option>
           <option value="false">Inactive</option>
         </select>
-        
       </div>
-    
-    
-      <button type="submit" [disabled]="!addCategoryForm.valid" [ngClass]="{ 'submit-btn-disable': !addCategoryForm.valid }" class="btn btn-primary  btn-flat">{{(categoryIdToUpdate)?'Update':'Add'}} Category</button>
-        <p *ngIf="addCategoryForm.controls.title.touched || submitted">
-      <app-form-validation-errors errorPrefix="Title " [errors]="addCategoryForm.get('title').errors"></app-form-validation-errors>
-    </p>
     </div>
-    </form>
-   </mk-box> 
-  
+
+<div class="clear"></div>
+      <button type="submit" [disabled]="!addCategoryForm.valid"
+        [ngClass]="{ 'submit-btn-disable': !addCategoryForm.valid }"
+        class="btn btn-primary  btn-flat">{{(categoryIdToUpdate)?'Update':'Add'}} Category</button>
+      <p *ngIf="addCategoryForm.controls.title.touched || submitted">
+        <app-form-validation-errors errorPrefix="Title " [errors]="addCategoryForm.get('title').errors">
+        </app-form-validation-errors>
+      </p>
+    </div>
+  </form>
+</mk-box>

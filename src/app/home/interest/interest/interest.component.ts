@@ -63,18 +63,11 @@ export class InterestComponent implements OnInit {
     subcategories = new Array<Subcategory>()
   constructor(private authService:AuthService, private interestService:InterestService, private commonUtilsService:CommonUtilsService, private categoryService:CategoryService, private titleService: TitleService, private formBuilder: FormBuilder, private angularFirestore: AngularFirestore, private storage: AngularFireStorage) { 
  
-    this.categoryService.listCategorySubcategory().subscribe(
+    this.listCategorySubcategory();
 
-      //case success
-      (data) => {   
-      console.log('listCategorySubcategory',data);   
-      
 
-    //case error 
-    },error => {
-      this.commonUtilsService.onError(error);
-    });
-
+    
+ 
 
     this.categoryService.allCategory().subscribe(
 
@@ -103,6 +96,42 @@ export class InterestComponent implements OnInit {
   }
  
 
+  listCategorySubcategory(){
+    this.angularFirestore.collection<any>('categories').ref
+      .get()
+      .then(res => {
+        if(res.docs.length == 0){
+          //no documents found
+        }else{
+          //you got some documents
+          let catSucatArr = []
+          res.forEach(category => {
+            //catSucatArr['category'] = category.data().title
+            this.angularFirestore.collection<any>('subcategories').ref.where('category_id', '==', category.data().title)
+            .get()
+            .then(subcatres => {
+             
+              let subcatArr = []
+              subcatres.forEach(subcat => {
+                //console.log('subcat',subcat.data());
+               // console.log('subcat name',subcat.data().title);
+                subcatArr.push(new Subcategory(subcat))
+                
+              })
+              catSucatArr.push({
+                'category':new Category(category),
+                'subcat':subcatArr
+              })
+            })
+            
+          })
+          //this.interests = catSucatArr;
+          console.log('catSucatArr',catSucatArr);
+        }
+      }).catch(err => {
+        console.log('something went wrong '+ err)
+      });
+  }
   onSort(event) {
   
     const sort = event.sorts[0];

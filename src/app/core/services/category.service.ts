@@ -104,23 +104,6 @@ export class CategoryService {
     });
         
   }
-
-  listCategorySubcategory(){
-    return this.firestore.collection<any>('categories', x => x.orderBy('created_at', 'desc')).snapshotChanges().map(data => {
-      console.log('size',data.length);
-      let cdata = new Array<any>()
-         data.map(async object => {                
-            let subcategory = await this.listSubcategory(object.payload.doc.data().title)
-            let category = new Category(object.payload.doc)
-
-           cdata.push({
-             category:category,
-             subcategory:subcategory
-           });        
-        });
-        
-        return cdata;
-      });
-  }
+  
 }
 
