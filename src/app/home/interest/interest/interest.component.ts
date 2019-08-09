@@ -63,6 +63,19 @@ export class InterestComponent implements OnInit {
     subcategories = new Array<Subcategory>()
   constructor(private authService:AuthService, private interestService:InterestService, private commonUtilsService:CommonUtilsService, private categoryService:CategoryService, private titleService: TitleService, private formBuilder: FormBuilder, private angularFirestore: AngularFirestore, private storage: AngularFireStorage) { 
  
+    this.categoryService.listCategorySubcategory().subscribe(
+
+      //case success
+      (data) => {   
+      console.log('listCategorySubcategory',data);   
+      
+
+    //case error 
+    },error => {
+      this.commonUtilsService.onError(error);
+    });
+
+
     this.categoryService.allCategory().subscribe(
 
       //case success
@@ -170,6 +183,7 @@ export class InterestComponent implements OnInit {
       status:['Active'],
       is_trashed:[''],    
     });
+
 
     this.titleService.setTitle();
     this.setPage(this._defaultPagination,'all');   
