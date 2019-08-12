@@ -193,41 +193,28 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [draggable]="false" [sortable]="false" name="Location">
+      <ngx-datatable-column [draggable]="false" [sortable]="false" name="Tagline">
         <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
-          {{ row.location }}
+          {{ row.headline }}
         </ng-template>
       </ngx-datatable-column>
 
+      <ngx-datatable-column [draggable]="false" [width]="100" [sortable]="false" name="About Place">
+        <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
+          {{ row.about }}
+        </ng-template>
+      </ngx-datatable-column>
 
-      <ngx-datatable-column [draggable]="false" [width]="100" [sortable]="false" name="Category">
+      <ngx-datatable-column [draggable]="false" [width]="100" [sortable]="false" name="Selected Activity">
         <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
           {{ row.category_id }}
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [draggable]="false" [width]="120" [sortable]="false" name="Sub-category">
-        <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
-          {{ row.subcategory_id }}
-        </ng-template>
-      </ngx-datatable-column>
+      
 
 
 
-      <ngx-datatable-column [draggable]="false" [width]="80" prop="cost_for_two" [sortable]="false" name="Cost for two">
-        <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
-          {{ row.cost_for_two | currency:'USD':true:'2.2-2'}}
-        </ng-template>
-      </ngx-datatable-column>
-
-
-
-
-      <ngx-datatable-column [draggable]="false" [width]="80" prop="status" [sortable]="false" name="Status">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-          {{ (row.status)?'Active':'Inactive' }}
-        </ng-template>
-      </ngx-datatable-column>
 
       <ngx-datatable-column [draggable]="false" [width]="100" [sortable]="true" prop="created_at" name="Created On">
         <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
@@ -255,7 +242,7 @@
   </div>
 </mk-box>
 
-<mk-box [isCollapsed]="isCollapsed" header="{{(interestIdToUpdate)?'Update':'Add'}} Company" [isCollapsable]="true"
+<mk-box [isCollapsed]="isCollapsed" header="{{(interestIdToUpdate)?'Update':'Add'}} A Place" [isCollapsable]="true"
   [isRemovable]="false">
 
 
@@ -263,7 +250,7 @@
     <div class="box-body">
       <div class="form_left_col">
         <div class="form-group">
-          <label for="companyname">Company Name*</label>
+          <label for="companyname">Place Name*</label>
           <input formControlName="name" type="text" class="form-control" placeholder="Enter company name">
           <p *ngIf="companyForm.controls.name.touched || submitted">
             <app-form-validation-errors errorPrefix="Company name " [errors]="companyForm.get('name').errors">
@@ -272,19 +259,51 @@
         </div>
 
         <div class="form-group">
-          <label for="headline">Headeline*</label>
-          <input formControlName="headline" type="text" class="form-control" placeholder="Enter company headline">
+          <label for="headline">Tagline*</label>
+          <input formControlName="headline" type="text" class="form-control" placeholder="Enter company Tagline">
           <p *ngIf="companyForm.controls.headline.touched || submitted">
-            <app-form-validation-errors errorPrefix="Company headline " [errors]="companyForm.get('headline').errors">
+            <app-form-validation-errors errorPrefix="Company tagline " [errors]="companyForm.get('headline').errors">
             </app-form-validation-errors>
           </p>
         </div>
 
         <div class="form-group">
-          <label for="location">Location*</label>
-          <input formControlName="location" type="text" class="form-control" placeholder="Enter company location">
-          <p *ngIf="companyForm.controls.location.touched || submitted">
-            <app-form-validation-errors errorPrefix="Company location " [errors]="companyForm.get('location').errors">
+          <label for="location">About Place*</label>
+          <input formControlName="about" type="text" class="form-control" placeholder="Enter About Place">
+          <p *ngIf="companyForm.controls.about.touched || submitted">
+            <app-form-validation-errors errorPrefix="About Place " [errors]="companyForm.get('about').errors">
+            </app-form-validation-errors>
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label>Choose Interest Category*</label>
+          <select formControlName="category_id" (change)="listSubcategory($event.target.value)" class="form-control">
+            <option value="">Choose Interest Category</option>
+            <option *ngFor="let category of categories" value="{{category.title}}">{{category.title}}</option>
+          </select>
+          <p *ngIf="companyForm.controls.category_id.touched || submitted">
+            <app-form-validation-errors errorPrefix="Interest Category " [errors]="companyForm.get('category_id').errors">
+            </app-form-validation-errors>
+          </p>
+        </div>
+        <div class="form-group">
+          <label>Choose Interest Subcategory*</label>
+          <select multiple formControlName="subcategory_id" class="form-control multiple_select">
+            <option value="">Choose Interest Subcategory</option>
+            <option *ngFor="let subcategory of subcategories" value="{{subcategory.title}}">{{subcategory.title}}
+            </option>
+          </select>
+          <p *ngIf="companyForm.controls.subcategory_id.touched || submitted">
+            <app-form-validation-errors errorPrefix="Interest Subcategory " [errors]="companyForm.get('subcategory_id').errors">
+            </app-form-validation-errors>
+          </p>
+        </div>
+        <div class="form-group">
+          <label for="location">Working Days*</label>
+          <input mask="0" formControlName="working_days" type="text" class="form-control" placeholder="Enter Working Days">
+          <p *ngIf="companyForm.controls.working_days.touched || submitted">
+            <app-form-validation-errors errorPrefix="Working Days " [errors]="companyForm.get('working_days').errors">
             </app-form-validation-errors>
           </p>
         </div>
@@ -317,36 +336,14 @@
             </p>
           </div>
         </div>
-        <div class="form-group">
-          <label>Select category*</label>
-          <select formControlName="category_id" (change)="listSubcategory($event.target.value)" class="form-control">
-            <option value="">Select category</option>
-            <option *ngFor="let category of categories" value="{{category.title}}">{{category.title}}</option>
-          </select>
-          <p *ngIf="companyForm.controls.category_id.touched || submitted">
-            <app-form-validation-errors errorPrefix="Category " [errors]="companyForm.get('category_id').errors">
-            </app-form-validation-errors>
-          </p>
-        </div>
-        <div class="form-group">
-          <label>Select subcategory*</label>
-          <select multiple formControlName="subcategory_id" class="form-control multiple_select">
-            <option value="">Select subcategory</option>
-            <option *ngFor="let subcategory of subcategories" value="{{subcategory.title}}">{{subcategory.title}}
-            </option>
-          </select>
-          <p *ngIf="companyForm.controls.subcategory_id.touched || submitted">
-            <app-form-validation-errors errorPrefix="Subcategory " [errors]="companyForm.get('subcategory_id').errors">
-            </app-form-validation-errors>
-          </p>
-        </div>
+        
 
         <div class="form-group">
-          <label for="headline">Cost for two*</label>
-          <input prefix="$" mask="comma_separator.2" formControlName="cost_for_two" type="text" class="form-control"
-            placeholder="Enter cost for two">
-          <p *ngIf="companyForm.controls.cost_for_two.touched || submitted">
-            <app-form-validation-errors errorPrefix="Cost for two " [errors]="companyForm.get('cost_for_two').errors">
+          <label for="headline">Address*</label>
+          <input  formControlName="address" type="text" class="form-control"
+            placeholder="Enter Address">
+          <p *ngIf="companyForm.controls.address.touched || submitted">
+            <app-form-validation-errors errorPrefix="Address " [errors]="companyForm.get('address').errors">
             </app-form-validation-errors>
           </p>
         </div>
@@ -388,7 +385,7 @@
         </div>
 
         <div class="form-group">
-          <label for="exampleInputFile">Company Logo</label>
+          <label for="exampleInputFile"> Upload Logo</label>
           <input type="file" #fileUploader (change)="fileChangeEvent($event)">
 
           <p *ngIf="croppedImage" class="help-block">Please crop image.</p>
@@ -400,7 +397,7 @@
         </div>
 
         <div class="form-group">
-          <label for="exampleInputFile">Company Cover Image</label>
+          <label for="exampleInputFile">Upload Image</label>
           <input type="file" #fileUploader (change)="coverFileChangeEvent($event)">
 
           <p *ngIf="croppedImage" class="help-block">Please crop image.</p>
@@ -417,6 +414,7 @@
     <div class="box-footer">
       <button type="submit" [disabled]="!companyForm.valid" [ngClass]="{ 'submit-btn-disable': !companyForm.valid }"
         class="btn btn-primary">{{(interestIdToUpdate)?'Update':'Add'}} Compnay</button>
+        <button *ngIf="interestIdToUpdate" type="button" (click)="cancel()" class="btn btn-primary  btn-flat">Cancel</button>
     </div>
   </form>
 </mk-box>

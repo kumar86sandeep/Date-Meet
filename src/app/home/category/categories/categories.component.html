@@ -5,7 +5,6 @@
     [headerHeight]="50" [footerHeight]="50" [rowHeight]="50" [externalPaging]="true" [rows]="categories"
     [sorts]="[{prop: 'created_at', dir: 'desc'}]" (page)="setPage($event,'all')">
 
-
     <ngx-datatable-column [resizeable]="false" [draggable]="false" width="250" [sortable]="false" name="Category name">
       <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
         {{ row.title }}
@@ -68,6 +67,7 @@
       <button type="submit" [disabled]="!addCategoryForm.valid"
         [ngClass]="{ 'submit-btn-disable': !addCategoryForm.valid }"
         class="btn btn-primary  btn-flat">{{(categoryIdToUpdate)?'Update':'Create'}} Category</button>
+        <button *ngIf="categoryIdToUpdate" type="button" (click)="cancel()" class="btn btn-primary  btn-flat">Cancel</button>
       <p *ngIf="addCategoryForm.controls.title.touched || submitted">
         <app-form-validation-errors errorPrefix="Title " [errors]="addCategoryForm.get('title').errors">
         </app-form-validation-errors>

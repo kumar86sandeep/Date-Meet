@@ -205,7 +205,10 @@ export class CompaniesComponent implements OnInit {
     }    
   }
  
- 
+  cancel(){    
+    this.interestIdToUpdate = ''
+    this.initResetForm()
+  }
   private initFilterForm(){
     this.filterForm = this.formBuilder.group({
       category: [''],
@@ -251,12 +254,13 @@ export class CompaniesComponent implements OnInit {
       cover_image: [null],
       logo: [null],
       headline: [null, [Validators.required]],
-      location: [null, [Validators.required]],
+      about: [null, [Validators.required]],
       category_id: ['', [Validators.required]],
       subcategory_id: ['', [Validators.required]],
+      working_days: [null, [Validators.required]],
       working_hours_from: [null, [Validators.required]],
       working_hours_to: [null, [Validators.required]],
-      cost_for_two: [null, [Validators.required]],
+      address: [null, [Validators.required]],
       website: [null, [Validators.required]],
       connect_instagram: [null],
       connect_facebook: [null],

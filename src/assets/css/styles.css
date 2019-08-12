@@ -205,8 +205,8 @@ app-sub-category input[type="file"] {width:100%;border: 1px solid #ccc;padding-t
 
 app-companies .datatable-header-inner {width:100% !important;}
 app-companies .datatable-row-center, .datatable-row-center.datatable-row-group, .datatable-body-row.datatable-row-even, .datatable-scroll, .datatable-body-row.datatable-row-odd {width:100% !important;}
-app-companies .datatable-header-cell {width:11.11% !important;} 
-app-companies .datatable-row-group .datatable-body-cell.sort-active {width:11.11% !important;} 
+app-companies .datatable-header-cell {width:14.28% !important;} 
+app-companies .datatable-row-group .datatable-body-cell.sort-active {width:14.28% !important;} 
 app-companies .ngx-datatable.bootstrap .datatable-header .datatable-header-cell .datatable-header-cell-label {font-weight:500; font-size:14px;}
 app-companies .box {box-shadow:none; border-top:0px;border-radius: 8px;}
 app-companies .box-header > .fa, .box-header > .glyphicon, .box-header > .ion, .box-header .box-title {

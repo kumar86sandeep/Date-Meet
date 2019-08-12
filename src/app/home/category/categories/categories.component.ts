@@ -123,6 +123,16 @@ export class CategoriesComponent implements OnInit {
     
   }
 
+  cancel(){
+    
+    
+    this._initalizeAddCategoryForm()
+    this.isCollapsed = true
+    this.addCategoryForm.get('title').setValue('')
+    this.addCategoryForm.get('status').setValue(true) 
+    this.categoryIdToUpdate='';
+  }
+
   populateEditForm(category){
     this.isCollapsed = false
   	this.categoryIdToUpdate = category.id

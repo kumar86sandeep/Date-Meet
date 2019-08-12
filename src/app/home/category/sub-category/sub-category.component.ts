@@ -132,6 +132,18 @@ export class SubCategoryComponent implements OnInit {
     this.interestForm.get('title').setValue('')
     this.interestForm.get('status').setValue(true)
   }
+
+  cancel(){   
+    this.interestIdToUpdate='';
+    this._initalizeAddSubcategoryForm();
+    this.isLoading = false
+    this.isCollapsed = true
+    this.imageUrl='';
+    this.interestForm.get('category_id').setValue('')
+    this.interestForm.get('title').setValue('')
+    this.interestForm.get('status').setValue(true)
+  }
+
   ngOnInit() {
     
     this._initalizeAddSubcategoryForm();

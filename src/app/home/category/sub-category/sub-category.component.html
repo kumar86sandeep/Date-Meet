@@ -146,6 +146,7 @@
 
                   <div class="box-footer">
                     <button type="submit" [disabled]="!interestForm.valid" [ngClass]="{ 'submit-btn-disable': !interestForm.valid }" class="btn btn-primary">{{(interestIdToUpdate)?'Update':'Create'}} Subcategory</button>
+                    <button *ngIf="interestIdToUpdate" type="button" (click)="cancel()" class="btn btn-primary  btn-flat">Cancel</button>
                   </div>
     </form>
     </mk-box>
