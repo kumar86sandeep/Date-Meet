@@ -27,28 +27,28 @@ import * as Prism from 'prismjs';
   styleUrls: ['./interest.component.css']
 })
 export class InterestComponent implements OnInit {
-
-  @ViewChild('fileUploader') fileUploader:ElementRef;
+  @ViewChild('myTable') table: any;
+  @ViewChild('fileUploader') fileUploader: ElementRef;
   interestForm: FormGroup;
-  isLoading:boolean = false
-  isCollapsed:boolean = true
+  isLoading: boolean = false
+  isCollapsed: boolean = true
   page = new Page();
   showCropper = false;
-  totalTrashed:any = 0
+  totalTrashed: any = 0
   categories = new Array<Category>()
-  submitted:boolean = false
+  submitted: boolean = false
   imageChangedEvent: any = '';
-  imageFileChanged:any = '';
-    croppedImage: any = '';
-    imageUrl:any = '';
-    interestIdToUpdate:any = '';
+  imageFileChanged: any = '';
+  croppedImage: any = '';
+  imageUrl: any = '';
+  interestIdToUpdate: any = '';
 
 
 
-   //Defined records limit and records limit options
-   currentPageLimit: number = environment.DEFAULT_RECORDS_LIMIT
-   readonly pageLimitOptions = environment.DEFAULT_PAGE_LIMIT_OPTIONS
-   
+  //Defined records limit and records limit options
+  currentPageLimit: number = environment.DEFAULT_RECORDS_LIMIT
+  readonly pageLimitOptions = environment.DEFAULT_PAGE_LIMIT_OPTIONS
+
 
   //default pagination settings
   private _defaultPagination = {
@@ -58,276 +58,83 @@ export class InterestComponent implements OnInit {
     pageSize: this.currentPageLimit
   }
 
-
-    interests = new Array<Interest>()
-    subcategories = new Array<Subcategory>()
-  constructor(private authService:AuthService, private interestService:InterestService, private commonUtilsService:CommonUtilsService, private categoryService:CategoryService, private titleService: TitleService, private formBuilder: FormBuilder, private angularFirestore: AngularFirestore, private storage: AngularFireStorage) { 
- 
+  ngOnInit(){
     this.listCategorySubcategory();
-
-
-    
- 
-
-    this.categoryService.allCategory().subscribe(
-
-      //case success
-      (data) => {   
-      console.log('data',data);   
-      
-      this.categories =  [...data];   
-      console.log('categories',this.categories)
-
-    //case error 
-    },error => {
-      this.commonUtilsService.onError(error);
-    });
-
-
-    this.interestService.countTrashed().subscribe(
-
-      //case success
-      (size) => {   
-        this.totalTrashed = size;
-    //case error 
-    },error => {
-      this.commonUtilsService.onError(error);
-    });
   }
- 
 
-  listCategorySubcategory(){
+  interests = new Array<any>() 
+  constructor(private angularFirestore: AngularFirestore, private commonUtilsService: CommonUtilsService) {
+  }
+
+
+  listCategorySubcategory() {
     this.angularFirestore.collection<any>('categories').ref
       .get()
       .then(res => {
-        if(res.docs.length == 0){
+        if (res.docs.length == 0) {
           //no documents found
-        }else{
+        } else {
           //you got some documents
           let catSucatArr = []
           res.forEach(category => {
             //catSucatArr['category'] = category.data().title
             this.angularFirestore.collection<any>('subcategories').ref.where('category_id', '==', category.data().title)
-            .get()
-            .then(subcatres => {
-             
-              let subcatArr = []
-              subcatres.forEach(subcat => {
-                //console.log('subcat',subcat.data());
-               // console.log('subcat name',subcat.data().title);
-                subcatArr.push(new Subcategory(subcat))
-                
+              .get()
+              .then(subcatres => {
+
+                let subcatArr:any = []
+                subcatres.forEach(subcat => {             
+                  subcatArr.push(subcat.data().title)
+                })
+                catSucatArr.push(new Category(category, subcatArr.join(',') ))
               })
-              catSucatArr.push({
-                'category':new Category(category),
-                'subcat':subcatArr
-              })
-            })
-            
+
           })
-          //this.interests = catSucatArr;
-          console.log('catSucatArr',catSucatArr);
+          this.interests = catSucatArr;
+          console.log('interests', this.interests);
         }
       }).catch(err => {
-        console.log('something went wrong '+ err)
+        console.log('something went wrong ' + err)
       });
   }
-  onSort(event) {
-  
-    const sort = event.sorts[0];
-    this.page.sortProperty = sort.prop
-    this.page.sortDirection = sort.dir   
-    this.setPage(this._defaultPagination,this.page.type);    
-  }
-  
-  onSubmit(){
-    //console.log(this.interestForm.value)
-    if (this.interestForm.invalid) {
-      this.submitted = true
-      return
-    }
-   // this.isCollapsed = false
 
-    if(this.croppedImage){     
-      let _this = this
-      let path = `interest/${new Date().getTime()}.jpg`;
-      this.interestForm.get('image').setValue(path)
-      this.storage.ref(path).putString(this.croppedImage, 'data_url').then(function(snapshot) {
-        //console.log(snapshot);   
-        snapshot.ref.getDownloadURL().then(function(downloadURL) {
-          console.log("File available at", downloadURL);
-          _this.saveUpdate(downloadURL)
-        });     
-      });
-      this.croppedImage = ''
-      this.showCropper = false
-      this.fileUploader.nativeElement.value = null;
-    }else{
-      this.saveUpdate('')
+
+  /**
+    * Delete a car
+    * @param $item    item is car object(selected) to delete
+    * Before delete, system confirm to delete the car. If yes opted then process deleting car else no action;
+    */
+  async delete(categoryId) {
+
+    //confirm before deleting car
+    if (! await this.commonUtilsService.isDeleteConfirmed()) {
+      return;
     }
 
-  }
-  saveUpdate(uploadedImageUrl){
-    let dataObject ={}
-    if(uploadedImageUrl.length>0){
-      this.interestForm.get('image').setValue(uploadedImageUrl)
-      dataObject['image'] = uploadedImageUrl
-    }
+    this.angularFirestore.collection('interests').doc(categoryId).update({
+      is_trashed: 'trashed'
+    })
 
-    dataObject['title'] = this.interestForm.get('title').value
-    dataObject['category_id'] = this.interestForm.get('category_id').value
-    dataObject['subcategory_id'] = this.interestForm.get('subcategory_id').value
-    dataObject['is_trashed'] = this.interestForm.get('is_trashed').value
-    dataObject['status'] = this.interestForm.get('status').value
-    if(this.interestIdToUpdate){
-      this.angularFirestore.collection('interests').doc(this.interestIdToUpdate).update(dataObject)
-      this.interestIdToUpdate='';
-      dataObject['updated_at'] =  new Date().getTime()  
-      this.interestForm.reset();
-      this.commonUtilsService.onSuccess('Interest updated'); 
-    }else{ 
-      dataObject['created_at'] = new Date().getTime()  
-       this.angularFirestore.collection('interests').add(dataObject)
-      this.interestForm.reset();
-      this.commonUtilsService.onSuccess('Interest added successfully.');
-
-      this.interestForm.reset();
-      
-    }
-    this.isCollapsed = true
-    this.interestForm.get('category_id').setValue('')
-    this.subcategories=new Array<Subcategory>()
-    this.interestForm.get('subcategory_id').setValue('')
-    this.interestForm.get('is_trashed').setValue('')
-    this.interestForm.get('status').setValue('Active')
-
-  }
-  ngOnInit() {
-    this.authService.isProfileUpdated(true);//trigger loggedin observable 
-    this.interestForm = this.formBuilder.group({
-      category_id: ['', [Validators.required]],
-      subcategory_id:['', [Validators.required]],
-      title: [null, [Validators.required]],
-      image:['null'],
-      status:['Active'],
-      is_trashed:[''],    
-    });
-
-
-    this.titleService.setTitle();
-    this.setPage(this._defaultPagination,'all');   
-  }
-
-  listSubcategory(event){
-console.log('event',event);
-    this.categoryService.listSubcategory(event).subscribe(
-
-      //case success
-      (data) => {   
-      console.log('data',data);   
-      
-      this.subcategories =  [...data];   
-      console.log('subcategories',this.subcategories)
-
-    //case error 
-    },error => {
-      this.commonUtilsService.onError(error);
-    });
-  }
-  
-  onSearch(searchValue : string):void {   
-    this.page.search = searchValue
-    this.setPage(this._defaultPagination,this.page.type);    
+    this.commonUtilsService.onSuccess('Interest deleted');
   }
 
   /**
-   * Populate the table with new data based on the page number
-   * @param page The page to select
-   * @param type Result type (All, Active, Archived)
+    * search
+    * @param event    search item event    
   */
-  setPage(page, type) {   
 
-    this.page.type = type;
-    this.page.pageNumber = page.offset;
-    this.page.size = page.pageSize;
-    if(page.search && page.search.length<=0){
-      this.isLoading = true
-    }
-    
-    this.isCollapsed = true
-    
-    //hit api to fetch data
-    this.interestService.intesrestListing(this.page).subscribe(
+  onSearch(event) {
+    const val = event.target.value.toLowerCase();
 
-      //case success
-      (pagedData) => {   
-      console.log('pagedData',pagedData);   
-      this.page = pagedData.page;
-      this.interests =  [...pagedData.data];   
-      //console.log('categories',this.interests)
-      this.isLoading = false
-    //case error 
-    },error => {
-      console.log(error)
-      this.commonUtilsService.onError(error);
+    // filter our data
+    const temp = this.interests.filter(function(d) {
+      return d.title.toLowerCase().indexOf(val) !== -1 || !val;
     });
+
+    // update the rows
+    this.interests = temp;
+    // Whenever the filter changes, always go back to the first page
+    this.table.offset = 0;
   }
-
-/**
-  * Delete a car
-  * @param $item    item is car object(selected) to delete
-  * Before delete, system confirm to delete the car. If yes opted then process deleting car else no action;
-  */
-    async delete(categoryId){
-
-      //confirm before deleting car
-      if(! await this.commonUtilsService.isDeleteConfirmed()) {
-        return;
-      } 
-    
-      this.angularFirestore.collection('interests').doc(categoryId).update({
-        is_trashed:'trashed'
-      })     
-
-      this.commonUtilsService.onSuccess('Interest deleted'); 
-    }
-
-async populateEditForm(interest){
-  await this.listSubcategory(interest.category)
-  this.isCollapsed = false;
-  window.scrollTo(0,document.body.scrollHeight);
-    this.interestIdToUpdate = interest.id
-    //this.imageUrl = interest.image
-    this.interestForm.patchValue({
-      title:interest.title,
-      category_id:interest.category,
-      subcategory_id:interest.subcategory,
-      status:interest.status,
-      created_at:interest.created_at,
-      updated_at:new Date().getTime()
-    })
-  }
-
-
-  fileChangeEvent(event: any): void {
-        this.imageChangedEvent = event;
-    }
-    imageCropped(event: ImageCroppedEvent) {
-  
-        this.croppedImage = event.base64;
-       // this.imageUrl = event.base64
-
-    }
-    imageLoaded() {
-        // show cropper
-        this.showCropper = true;
-
-    }
-    cropperReady() {
-        // cropper ready
-    }
-    loadImageFailed() {
-        // show message
-    }
 
 }

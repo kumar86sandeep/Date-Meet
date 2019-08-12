@@ -1,121 +1,71 @@
 <mk-box [isLoading]="isLoading" header="Interests Listing" [isCollapsable]="false" [isRemovable]="false">
-    
-    <div class="box-body pad15">
-      <div class="row border-Col">
-         
 
-        <div class="left_col">
-          <label>Total Interests <span>({{page.totalElements}})</span></label>
-             <a class="trashed_text" routerLink="trashed">Trashed Interests <span>({{totalTrashed}})</span></a>      
-        </div>
-        
+  <div class="box-body pad15">
+    <div class="row border-Col">
 
-        <div class="searchBar_col">
-        
-          <input (input)="onSearch($event.target.value)" class="form-control"  type="text" placeholder="Search by title" >
-        </div>
 
-        
-        
-
+      <div class="left_col">
+        <label>Total Interests <span>({{page.totalElements}})</span></label>
+        <a class="trashed_text" routerLink="trashed">Trashed Interests <span>({{totalTrashed}})</span></a>
       </div>
+
+
+      <div class="searchBar_col">
+
+        <input (input)="onSearch($event)" class="form-control" type="text" placeholder="Search Interests">
+      </div>
+
+
+
+
     </div>
+  </div>
 
-  <ngx-datatable
-    #myTable
-    class="bootstrap"   
-    [count]="page.totalElements" 
-    [offset]="page.pageNumber"
-    [limit]="page.size"   
-    [headerHeight]="50"
-    [footerHeight]="50"
-    [rowHeight]="50"
-    [externalPaging]="true"      
-    [rows]="interests"
-    [sorts]="[{prop: 'created_at', dir: 'desc'}]"    
-    (page)="setPage($event,'all')"
-    (sort)="onSort($event)"
-  >
-    
-  
+  <ngx-datatable #myTable class="bootstrap" [rows]="interests"  [headerHeight]="50" [footerHeight]="50" [rowHeight]="50" [limit]="10" [sorts]="[{prop: 'created_at', dir: 'desc'}]">
 
 
-  
-  
-  
 
-  <ngx-datatable-column 
-  [draggable]="false" prop="category_id" [sortable]="false" name="Category">
-      <ng-template
-        let-rowIndex="rowIndex"
-        let-row="row"
-        ngx-datatable-cell-template
-      >
-        {{ row.category }}
+
+    <ngx-datatable-column [draggable]="false" prop="category_id" [sortable]="true" name="Category">
+      <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
+        {{ row.title }}
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column 
-    [draggable]="false" prop="subcategory_id" [sortable]="false" name="Subcategory">
-      <ng-template
-        let-rowIndex="rowIndex"
-        let-row="row"
-        ngx-datatable-cell-template
-      >
+    <ngx-datatable-column [draggable]="false" prop="subcategory_id" [sortable]="false" name="Subcategory">
+      <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
         {{ row.subcategory }}
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column
-    [draggable]="false" prop="status" [sortable]="false" name="People are using it">
-      <ng-template
-        let-rowIndex="rowIndex"
-        let-row="row"
-        ngx-datatable-cell-template
-      >
+    <ngx-datatable-column [draggable]="false" prop="status" [sortable]="true" name="People are using it">
+      <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
         0
       </ng-template>
     </ngx-datatable-column>
 
-    <ngx-datatable-column
-    [draggable]="false" prop="status" [sortable]="false" name="Status">
-      <ng-template
-        let-rowIndex="rowIndex"
-        let-row="row"
-        ngx-datatable-cell-template
-      >
+    <ngx-datatable-column [draggable]="false" prop="status" [sortable]="true" name="Status">
+      <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
         {{ row.status }}
       </ng-template>
     </ngx-datatable-column>
-    
-    <ngx-datatable-column 
-    [draggable]="false"  [sortable]="true"  prop="created_at" name="Created On">
-        <ng-template
-          let-row="row"
-          let-value="value"
-          ngx-datatable-cell-template
-        >
+
+    <ngx-datatable-column [draggable]="false" [sortable]="true" prop="created_at" name="Created On">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
         {{ row.created_at | date:'MM-dd-yy, h:mm a' }}
-        </ng-template>
+      </ng-template>
     </ngx-datatable-column>
 
 
-    <ngx-datatable-column [sortable]="false" 
-    [draggable]="false"  name="Action">
-        <ng-template
-          let-row="row"
-          let-value="value"
-          ngx-datatable-cell-template
-        >
-        <div class="icon"><a href="javascript:void(0)" (click)="populateEditForm(row)"><i class="fa fa-edit"></i></a>  <a (click)="delete(row.id)"href="javascript:void(0)"><i class="fa fa-trash"></i></a></div>
-        </ng-template>
+    <ngx-datatable-column [sortable]="false" [draggable]="false" name="Action">
+      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+        <div class="icon"><a (click)="delete(row?.id)" href="javascript:void(0)"><i class="fa fa-trash"></i></a></div>
+      </ng-template>
     </ngx-datatable-column>
 
-    
+
 
 
   </ngx-datatable>
 
 </mk-box>
-
-  

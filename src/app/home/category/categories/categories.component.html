@@ -44,19 +44,19 @@
 
 </mk-box>
 
-<mk-box [isCollapsed]="isCollapsed" header="{{(categoryIdToUpdate)?'Update':'Add'}} Category" [isRemovable]="false">
+<mk-box [isCollapsed]="isCollapsed" header="{{(categoryIdToUpdate)?'Update':'Add'}} search Category" [isRemovable]="false">
 
   <form [formGroup]="addCategoryForm" (ngSubmit)="onAddCategory()">
     <div class="box-body">
 
         <div class="form_left_col">
       <div class="form-group">
-        <label for="title">Category name*:</label>
-        <input type="text" formControlName="title" class="form-control" id="title" placeholder="Category title">
+        <label for="title">Category Name*:</label>
+        <input type="text" formControlName="title" class="form-control" id="title" placeholder="Enter a category name">
       </div>
 
       <div class="form-group">
-        <label>Select status*</label>
+        <label>Select Status*</label>
         <select formControlName="status" class="form-control">
           <option value="true">Active</option>
           <option value="false">Inactive</option>
@@ -67,7 +67,7 @@
 <div class="clear"></div>
       <button type="submit" [disabled]="!addCategoryForm.valid"
         [ngClass]="{ 'submit-btn-disable': !addCategoryForm.valid }"
-        class="btn btn-primary  btn-flat">{{(categoryIdToUpdate)?'Update':'Add'}} Category</button>
+        class="btn btn-primary  btn-flat">{{(categoryIdToUpdate)?'Update':'Create'}} Category</button>
       <p *ngIf="addCategoryForm.controls.title.touched || submitted">
         <app-form-validation-errors errorPrefix="Title " [errors]="addCategoryForm.get('title').errors">
         </app-form-validation-errors>

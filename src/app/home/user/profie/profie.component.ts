@@ -80,7 +80,8 @@ export class ProfieComponent implements OnInit {
       this.profileForm.get('first_name').setValue(displayNameObject[0])
       this.profileForm.get('last_name').setValue(displayNameObject[1])
       let recoverEmailObject =  (this.userData.displayName).split('####')
-      this.profileForm.get('recovery_email').setValue(recoverEmailObject[1])
+      console.log('recoverEmailObject',recoverEmailObject[1]);
+      this.profileForm.get('recovery_email').setValue((recoverEmailObject[1]!="null")?recoverEmailObject[1]:'')
     }
     //this.imageUrl= this.userData.photoURL
 

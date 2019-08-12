@@ -86,16 +86,16 @@
   
   </mk-box>
 
-  <mk-box [isCollapsed]="isCollapsed"  header="{{(interestIdToUpdate)?'Update':'Add'}} Subcategory" [isCollapsable]="true" [isRemovable]="false">
+  <mk-box [isCollapsed]="isCollapsed"  header="{{(interestIdToUpdate)?'Update':'Add'}} search Subcategory" [isCollapsable]="true" [isRemovable]="false">
 
   
     <form [formGroup]="interestForm" (ngSubmit)="onSubmit()">
                   <div class="box-body">
                     <div class="form_left_col">
                     <div class="form-group">
-                      <label>Select Category</label>
+                      <label>Decide a Category</label>
                       <select formControlName="category_id" class="form-control">
-                        <option value="">Select Category</option>
+                        <option value="">Choose a category</option>
                         <option *ngFor="let category of categories" value="{{category.title}}">{{category.title}}</option>
                       </select>
                       <p *ngIf="interestForm.controls.category_id.touched || submitted">
@@ -104,15 +104,15 @@
                     </div>
     
                     <div class="form-group">
-                      <label for="exampleInputEmail1">Sub-category name*</label>
-                      <input formControlName="title" type="text" class="form-control"  placeholder="Enter interest title">
+                      <label for="exampleInputEmail1">Subcategory Name*</label>
+                      <input formControlName="title" type="text" class="form-control"  placeholder="Enter subcategory name">
                       <p *ngIf="interestForm.controls.title.touched || submitted">
                 <app-form-validation-errors errorPrefix="Intertest title " [errors]="interestForm.get('title').errors"></app-form-validation-errors>
               </p>
                     </div>
 
                     <div class="form-group">
-                      <label>Select status*</label>
+                      <label>Select Status*</label>
                       <select formControlName="status" class="form-control">
                         <option value="true">Active</option>
                         <option value="false">Inactive</option>
@@ -122,7 +122,7 @@
 
                    
                     <div class="form-group">
-                      <label for="exampleInputFile">File input</label>
+                      <label for="exampleInputFile">Upload Thumbnail</label>
                       <input type="file" accept="image/*" #fileUploader (change)="fileChangeEvent($event)">
     
                       <p *ngIf="imageUrl" class="help-block">Please crop image.</p>
@@ -145,7 +145,7 @@
                   <div class="clear"></div>
 
                   <div class="box-footer">
-                    <button type="submit" [disabled]="!interestForm.valid" [ngClass]="{ 'submit-btn-disable': !interestForm.valid }" class="btn btn-primary">Add Interest</button>
+                    <button type="submit" [disabled]="!interestForm.valid" [ngClass]="{ 'submit-btn-disable': !interestForm.valid }" class="btn btn-primary">{{(interestIdToUpdate)?'Update':'Create'}} Subcategory</button>
                   </div>
     </form>
     </mk-box>

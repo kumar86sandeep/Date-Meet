@@ -1,4 +1,5 @@
-<mk-box header="Filters" [isCollapsed]="true" [isCollapsable]="true" [isRemovable]="false">
+
+<!--<mk-box header="Filters" [isCollapsed]="true" [isCollapsable]="true" [isRemovable]="false">
   <form [formGroup]="filterForm">
     <div class="box-body">
 
@@ -32,8 +33,8 @@
       <button type="button" (click)="applyFilters()" class="btn btn-primary">Apply Filters</button>
     </div>
   </form>
-</mk-box>
-<mk-box [isLoading]="isLoading" header="Company Listing" [isCollapsable]="true" [isRemovable]="false">
+</mk-box>-->
+<mk-box [isLoading]="isLoading" header="Places Listing" [isCollapsable]="true" [isRemovable]="false">
 
     <div class="box-body pad15">
         <div class="row border-Col">
@@ -48,7 +49,7 @@
           
               <form [formGroup]="searchForm">
                   <input formControlName="search" style="border:1px solid; border-radius:25px;" class="form-control" type="text"
-                    placeholder="Search by company name">
+                    placeholder="Search a place">
                 </form>
           </div>
   
@@ -186,7 +187,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      <ngx-datatable-column [draggable]="false" [width]="150" [sortable]="false" name="Name">
+      <ngx-datatable-column [draggable]="false" [width]="150" [sortable]="false" name="Place Name">
         <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
           {{ row.name }}
         </ng-template>

@@ -16,13 +16,13 @@ export const adminLteConf = {
     {
       label: 'Interests', iconClasses: 'fa fa-th-list', children: [   
         { label: 'Interests Listing', route: 'admin/interest' },    
-        { label: 'Categories', route: 'admin/category' },
-        { label: 'Subcategories', route: 'admin/category/subcategory-listing' }     
+        { label: 'Category', route: 'admin/category' },
+        { label: 'Subcategory', route: 'admin/category/subcategory-listing' }     
       ],
     },
     {
-      label: 'Company', iconClasses: 'fa fa-th-list', children: [   
-        { label: 'Company Listing', route: 'admin/company' },    
+      label: 'Places', iconClasses: 'fa fa-th-list', children: [   
+        { label: 'Places Listing', route: 'admin/company' },    
              
       ],
     },
