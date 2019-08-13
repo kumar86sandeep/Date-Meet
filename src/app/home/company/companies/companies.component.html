@@ -1,4 +1,3 @@
-
 <!--<mk-box header="Filters" [isCollapsed]="true" [isCollapsable]="true" [isRemovable]="false">
   <form [formGroup]="filterForm">
     <div class="box-body">
@@ -36,32 +35,32 @@
 </mk-box>-->
 <mk-box [isLoading]="isLoading" header="Places Listing" [isCollapsable]="true" [isRemovable]="false">
 
-    <div class="box-body pad15">
-        <div class="row border-Col">
-           
-  
-          <div class="left_col">
-              <button class="button red" (click)="downloadCsv()"> Export List </button>    
-          </div>
-          
-  
-          <div class="searchBar_col">
-          
-              <form [formGroup]="searchForm">
-                  <input formControlName="search" style="border:1px solid; border-radius:25px;" class="form-control" type="text"
-                    placeholder="Search a place">
-                </form>
-          </div>
-  
-          
-          
-  
-        </div>
+  <div class="box-body pad15">
+    <div class="row border-Col">
+
+
+      <div class="left_col">
+        <button class="button red" (click)="downloadCsv()"> Export List </button>
       </div>
+
+
+      <div class="searchBar_col">
+
+        <form [formGroup]="searchForm">
+          <input formControlName="search" style="border:1px solid; border-radius:25px;" class="form-control" type="text"
+            placeholder="Search a place">
+        </form>
+      </div>
+
+
+
+
+    </div>
+  </div>
 
   <div class="box-body">
 
-    
+
 
 
     <ngx-datatable #myTable class="bootstrap" [count]="page.totalElements" [offset]="page.pageNumber"
@@ -211,7 +210,7 @@
         </ng-template>
       </ngx-datatable-column>
 
-      
+
 
 
 
@@ -283,7 +282,8 @@
             <option *ngFor="let category of categories" value="{{category.title}}">{{category.title}}</option>
           </select>
           <p *ngIf="companyForm.controls.category_id.touched || submitted">
-            <app-form-validation-errors errorPrefix="Interest Category " [errors]="companyForm.get('category_id').errors">
+            <app-form-validation-errors errorPrefix="Interest Category "
+              [errors]="companyForm.get('category_id').errors">
             </app-form-validation-errors>
           </p>
         </div>
@@ -295,32 +295,33 @@
             </option>
           </select>
           <p *ngIf="companyForm.controls.subcategory_id.touched || submitted">
-            <app-form-validation-errors errorPrefix="Interest Subcategory " [errors]="companyForm.get('subcategory_id').errors">
+            <app-form-validation-errors errorPrefix="Interest Subcategory "
+              [errors]="companyForm.get('subcategory_id').errors">
             </app-form-validation-errors>
           </p>
         </div>
         <div class="form-group">
           <label for="location">Working Days*</label>
-          <input mask="0" formControlName="working_days" type="text" class="form-control" placeholder="Enter Working Days">
+          <input mask="0" formControlName="working_days" type="text" class="form-control" errorPrefix="Working Days "      placeholder="Enter Working Days">
           <p *ngIf="companyForm.controls.working_days.touched || submitted">
-            <app-form-validation-errors errorPrefix="Working Days " [errors]="companyForm.get('working_days').errors">
+            <app-form-validation-errors errorPrefix="Working Days " minValue=1  maxValue=7 [errors]="companyForm.get('working_days').errors">
             </app-form-validation-errors>
           </p>
         </div>
 
         <div class="row form-group m_b_0">
-            <div class="col-md-12">
-              <label for="headline">Working Hours*</label>
-            </div>
+          <div class="col-md-12">
+            <label for="headline">Working Hours*</label>
+          </div>
 
         </div>
         <div class="row">
 
-         
+
           <div class="form-group col-md-4">
 
-            <input formControlName="working_hours_from" type="text" class="form-control" placeholder="From HH:MM"
-              mask="Hh:m0">
+            <input atp-time-picker readonly value="12:00" formControlName="working_hours_from" type="text" class="form-control"
+              placeholder="From HH:MM">
             <p *ngIf="companyForm.controls.working_hours_from.touched || submitted">
               <app-form-validation-errors errorPrefix="Working hours From "
                 [errors]="companyForm.get('working_hours_from').errors"></app-form-validation-errors>
@@ -328,20 +329,19 @@
           </div>
           <div class="form-group col-md-4">
 
-            <input formControlName="working_hours_to" type="text" class="form-control" placeholder="To HH:MM"
-              mask="Hh:m0">
+            <input atp-time-picker readonly value="12:00" formControlName="working_hours_to" type="text" class="form-control"
+              placeholder="To HH:MM">
             <p *ngIf="companyForm.controls.working_hours_to.touched || submitted">
               <app-form-validation-errors errorPrefix="Working hours to "
                 [errors]="companyForm.get('working_hours_to').errors"></app-form-validation-errors>
             </p>
           </div>
         </div>
-        
+
 
         <div class="form-group">
           <label for="headline">Address*</label>
-          <input  formControlName="address" type="text" class="form-control"
-            placeholder="Enter Address">
+          <input formControlName="address" type="text" class="form-control" placeholder="Enter Address">
           <p *ngIf="companyForm.controls.address.touched || submitted">
             <app-form-validation-errors errorPrefix="Address " [errors]="companyForm.get('address').errors">
             </app-form-validation-errors>
@@ -352,7 +352,8 @@
           <label for="headline">Website*</label>
           <input formControlName="website" type="text" class="form-control" placeholder="Enter website url">
           <p *ngIf="companyForm.controls.website.touched || submitted">
-            <app-form-validation-errors errorPrefix="Website url " [errors]="companyForm.get('website').errors">
+            <app-form-validation-errors patternError="Not a valid URL." errorPrefix="Website url "
+              [errors]="companyForm.get('website').errors">
             </app-form-validation-errors>
           </p>
         </div>
@@ -361,18 +362,32 @@
           <label for="headline">Connect Instagram</label>
           <input formControlName="connect_instagram" type="text" class="form-control"
             placeholder="Enter connect instagram">
-
+          <p *ngIf="companyForm.controls.connect_instagram.touched || submitted">
+            <app-form-validation-errors patternError="Not a valid URL." errorPrefix="Website url "
+              [errors]="companyForm.get('connect_instagram').errors">
+            </app-form-validation-errors>
+          </p>
         </div>
 
         <div class="form-group">
           <label for="headline">Connect Facebook</label>
           <input formControlName="connect_facebook" type="text" class="form-control"
-            placeholder="Enter connect faceboog">
+            placeholder="Enter connect facebook">
+          <p *ngIf="companyForm.controls.connect_facebook.touched || submitted">
+            <app-form-validation-errors patternError="Not a valid URL." errorPrefix="Website url "
+              [errors]="companyForm.get('connect_facebook').errors">
+            </app-form-validation-errors>
+          </p>
         </div>
 
         <div class="form-group">
           <label for="headline">Connect google</label>
           <input formControlName="connect_google" type="text" class="form-control" placeholder="Enter connect google">
+          <p *ngIf="companyForm.controls.connect_google.touched || submitted">
+            <app-form-validation-errors patternError="Not a valid URL." errorPrefix="Website url "
+              [errors]="companyForm.get('connect_google').errors">
+            </app-form-validation-errors>
+          </p>
         </div>
 
         <div class="form-group">
@@ -414,7 +429,8 @@
     <div class="box-footer">
       <button type="submit" [disabled]="!companyForm.valid" [ngClass]="{ 'submit-btn-disable': !companyForm.valid }"
         class="btn btn-primary">{{(interestIdToUpdate)?'Update':'Add'}} Compnay</button>
-        <button *ngIf="interestIdToUpdate" type="button" (click)="cancel()" class="btn btn-primary  btn-flat">Cancel</button>
+      <button *ngIf="interestIdToUpdate" type="button" (click)="cancel()"
+        class="btn btn-primary  btn-flat">Cancel</button>
     </div>
   </form>
 </mk-box>

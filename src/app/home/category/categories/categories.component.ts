@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from "@angular/router";
 import { Subscription } from 'rxjs/Subscription';
@@ -23,7 +23,7 @@ import * as firebase from 'firebase';
   styleUrls: ['./categories.component.css']
 })
 export class CategoriesComponent implements OnInit {
-	
+  @ViewChild('myTable') table: any;
   page = new Page();
   isLoading:boolean = false
   isCollapsed:boolean = true
@@ -39,21 +39,31 @@ export class CategoriesComponent implements OnInit {
    readonly pageLimitOptions = environment.DEFAULT_PAGE_LIMIT_OPTIONS
   
 
-  //default pagination settings
-  private _defaultPagination = {
-    count: 0,
-    limit: this.currentPageLimit,
-    offset: 0,
-    pageSize: this.currentPageLimit
-  }
-
+  
   constructor(private commonUtilsService:CommonUtilsService, private categoryService:CategoryService, private titleService: TitleService, private formBuilder: FormBuilder, private angularFirestore: AngularFirestore) { }
 
   ngOnInit() {
   	this._initalizeAddCategoryForm()
   	//setting the page title
     this.titleService.setTitle();
-  	this.setPage(this._defaultPagination,'all');
+
+
+    //listing all categories
+    this.categoryService.allCategory().subscribe(
+
+      //case success
+      (data) => {   
+      console.log('data',data);   
+      
+      this.categories =  [...data];   
+      console.log('categories',this.categories)
+
+    //case error 
+    },error => {
+      this.commonUtilsService.onError(error);
+    });
+    
+  	
   }
   private _initalizeAddCategoryForm(){
   	this.addCategoryForm = this.formBuilder.group({
@@ -63,34 +73,26 @@ export class CategoriesComponent implements OnInit {
       updated_at: [new Date().getTime()]  */     
     });
   }
+  
+
   /**
-   * Populate the table with new data based on the page number
-   * @param page The page to select
-   * @param type Result type (All, Active, Archived)
+    * search
+    * @param event    search item event    
   */
-  setPage(page, type) {   
 
-    this.page.type = type;
-    this.page.pageNumber = page.offset;
-    this.page.size = page.pageSize;
-    this.isLoading = true
-    
-    //hit api to fetch data
-    this.categories = new Array<Category>()
-    this.categoryService.listing(this.page).subscribe(
+ onSearch(event) {
+  const val = event.target.value.toLowerCase();
 
-      //case success
-      (pagedData) => {   
-      console.log('pagedData',pagedData);   
-      this.page = pagedData.page;
-      this.categories =  [...pagedData.data];   
-    	console.log('categories',this.categories)
-      this.isLoading = false
-    //case error 
-    },error => {
-      this.commonUtilsService.onError(error);
-    });
-  }
+  // filter our data
+  const temp = this.categories.filter(function(d) {
+    return d.title.toLowerCase().indexOf(val) !== -1 || !val;
+  });
+
+  // update the rows
+  this.categories = temp;
+  // Whenever the filter changes, always go back to the first page
+  this.table.offset = 0;
+}
 
   onAddCategory(){
   	if (this.addCategoryForm.invalid) {

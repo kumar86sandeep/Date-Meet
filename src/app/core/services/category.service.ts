@@ -89,21 +89,50 @@ export class CategoryService {
          });
          return cdata;
    });
+   }  
+
+   subcategory(value):Observable<any>{
+    // console.log('name',value)
+     return this.firestore.collection<any>('subcategories',ref => {
+       return ref
+         .where('category_id', '==',value)
+     }).snapshotChanges().map(data => {
+      // console.log('data',data)
+       let cdata = new Array<Subcategory>()
+          data.map(object => {                
+        //  console.log('object',object.payload.doc.data())
+            cdata.push(object.payload.doc.data().title);        
+         });
+         let datea = cdata.join(', ')
+         return datea;
+   });
+   }  
+   
+   interestListing():Observable<any>{
+    return this.firestore.collection<any>('categories')  
+    .snapshotChanges().map(res => {    
+        
+        let catSucatArr = new Array<Category>()
+        res.map(category => {               
+            catSucatArr.push(new Category(category.payload.doc ))
+        })
+        return catSucatArr;
+      
+    })
    }
 
-   
-
-
-
-
-
-  addInterest(image){
-    let path = `category/subcategory/${new Date().getTime()}.jpg`;
-    this.storage.ref(path).putString(image, 'data_url').then(function(snapshot) {
-        console.log(snapshot.downloadURL);
-    });
+   subcategoryListing():Observable<any>{
+    return this.firestore.collection<any>('subcategories')  
+    .snapshotChanges().map(res => {    
         
-  }
+        let catSucatArr = new Array<Subcategory>()
+        res.map(category => {               
+            catSucatArr.push(new Subcategory(category.payload.doc ))
+        })
+        return catSucatArr;
+      
+    })
+   }
   
 }
 

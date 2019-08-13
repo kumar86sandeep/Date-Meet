@@ -24,6 +24,8 @@ export class FormValidationErrorsComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    console.log('errors',this.errors);
+  }
 
 }

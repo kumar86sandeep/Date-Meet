@@ -5,6 +5,7 @@ import { ImageCropperModule } from 'ngx-image-cropper';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskModule } from 'ngx-mask'
 import { Ng5SliderModule } from 'ng5-slider';
+import { AmazingTimePickerModule } from 'amazing-time-picker'; // this line you need
 
 import { CompaniesComponent } from './companies/companies.component';
 import { EventsComponent } from './events/events.component';
@@ -28,7 +29,8 @@ import { CompanyRoutingModule } from '../company/company-routing.module';
     ReactiveFormsModule,
     CompanyRoutingModule,
     NgxDatatableModule,
-    Ng5SliderModule
+    Ng5SliderModule,
+    AmazingTimePickerModule
   ]
 })
 export class CompanyModule { }

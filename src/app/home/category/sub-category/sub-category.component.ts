@@ -26,6 +26,7 @@ import * as Prism from 'prismjs';
   styleUrls: ['./sub-category.component.css']
 })
 export class SubCategoryComponent implements OnInit {
+  @ViewChild('myTable') table: any;
   @ViewChild('fileUploader') fileUploader:ElementRef;
   interestForm: FormGroup;
   isLoading:boolean = false
@@ -43,22 +44,12 @@ export class SubCategoryComponent implements OnInit {
 
 
    //Defined records limit and records limit options
-   currentPageLimit: number = environment.DEFAULT_RECORDS_LIMIT
-   readonly pageLimitOptions = environment.DEFAULT_PAGE_LIMIT_OPTIONS
-   
-
-  //default pagination settings
-  private _defaultPagination = {
-    count: 0,
-    limit: this.currentPageLimit,
-    offset: 0,
-    pageSize: this.currentPageLimit
-  }
-
+   currentPageLimit: number = environment.DEFAULT_RECORDS_LIMIT  
 
   interests = new Array<Subcategory>()
   constructor(private commonUtilsService:CommonUtilsService, private categoryService:CategoryService, private titleService: TitleService, private formBuilder: FormBuilder, private angularFirestore: AngularFirestore, private storage: AngularFireStorage) { 
  
+    //listing all categories
     this.categoryService.allCategory().subscribe(
 
       //case success
@@ -73,7 +64,42 @@ export class SubCategoryComponent implements OnInit {
       this.commonUtilsService.onError(error);
     });
 
+    //listing all subcategories
+    this.categoryService.subcategoryListing().subscribe(
+
+      //case success
+      (data) => {
+        
+        this.interests =  [...data];   
+        //console.log('companies',this.companies)
+        
+        //case error 
+      }, error => {
+      console.log(error)
+      this.commonUtilsService.onError(error);
+    });
+
+
   }
+  /**
+    * search
+    * @param event    search item event    
+  */
+
+ onSearch(event) {
+  const val = event.target.value.toLowerCase();
+
+  // filter our data
+  const temp = this.interests.filter(function(d) {
+    return d.title.toLowerCase().indexOf(val) !== -1 || !val;
+  });
+
+  // update the rows
+  this.interests = temp;
+  // Whenever the filter changes, always go back to the first page
+  this.table.offset = 0;
+}
+
 
   onSubmit(){
     if (this.interestForm.invalid) {
@@ -144,11 +170,9 @@ export class SubCategoryComponent implements OnInit {
     this.interestForm.get('status').setValue(true)
   }
 
-  ngOnInit() {
-    
+  ngOnInit() {    
     this._initalizeAddSubcategoryForm();
     this.titleService.setTitle();
-    this.setPage(this._defaultPagination,'all');
 
   }
 
@@ -163,49 +187,21 @@ export class SubCategoryComponent implements OnInit {
     });
   }
 
-  /**
-   * Populate the table with new data based on the page number
-   * @param page The page to select
-   * @param type Result type (All, Active, Archived)
-  */
-  setPage(page, type) {   
-
-    this.page.type = type;
-    this.page.pageNumber = page.offset;
-    this.page.size = page.pageSize;
-    this.isLoading = true
-  
-    
-    //hit api to fetch data
-    this.categoryService.intesrestListing(this.page).subscribe(
-
-      //case success
-      (pagedData) => {   
-      console.log('pagedData',pagedData);   
-      this.page = pagedData.page;
-      this.interests =  [...pagedData.data];   
-      console.log('categories',this.interests)
-      this.isLoading = false
-    //case error 
-    },error => {
-      this.commonUtilsService.onError(error);
-    });
-  }
 
 /**
   * Delete a car
   * @param $item    item is car object(selected) to delete
   * Before delete, system confirm to delete the car. If yes opted then process deleting car else no action;
   */
-    async delete(categoryId){
+  async delete(categoryId){
 
-      //confirm before deleting car
-      if(! await this.commonUtilsService.isDeleteConfirmed()) {
-        return;
-      } 
-      this.angularFirestore.doc('subcategories/' + categoryId).delete(); 
-      this.commonUtilsService.onSuccess('Subcategory deleted'); 
-    }
+    //confirm before deleting car
+    if(! await this.commonUtilsService.isDeleteConfirmed()) {
+      return;
+    } 
+    this.angularFirestore.doc('subcategories/' + categoryId).delete(); 
+    this.commonUtilsService.onSuccess('Subcategory deleted'); 
+  }
 
 populateEditForm(interest){
   this.isCollapsed = false;
@@ -235,7 +231,6 @@ populateEditForm(interest){
         // show cropper
         this.showCropper = true;
 
-    }
-    
+    }   
 
 }

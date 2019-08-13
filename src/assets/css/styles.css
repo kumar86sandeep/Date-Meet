@@ -177,6 +177,7 @@ app-categories .ngx-datatable.bootstrap .datatable-header .datatable-header-cell
 app-categories .border-Col {border-bottom:1px solid #ebebeb; padding:0px 0px 20px 0px;}
 app-categories .form-group label {font-weight:500; font-size:13px;}
 app-categories input, app-categories select {border-radius: 2px !important; height: 42px !important; max-width:85% !important; border: 1px solid #ccc;}
+app-categories .border-Col {border-bottom:1px solid #ebebeb; padding:0px 0px 20px 0px;}
 
 app-sub-category .datatable-header-inner {width:100% !important;}
 app-sub-category .datatable-row-center, .datatable-row-center.datatable-row-group, .datatable-body-row.datatable-row-even, .datatable-scroll, .datatable-body-row.datatable-row-odd {width:100% !important;}
@@ -202,6 +203,7 @@ app-sub-category .border-Col {border-bottom:1px solid #ebebeb; padding:0px 0px 2
 app-sub-category .form-group label {font-weight:500; font-size:13px;}
 app-sub-category input, app-sub-category select {border-radius: 2px !important; height: 42px !important; max-width:85% !important; border: 1px solid #ccc;}
 app-sub-category input[type="file"] {width:100%;border: 1px solid #ccc;padding-top: 9px;vertical-align: middle; padding-left: 12px;}
+app-sub-category .border-Col {border-bottom:1px solid #ebebeb; padding:0px 0px 20px 0px;}
 
 app-companies .datatable-header-inner {width:100% !important;}
 app-companies .datatable-row-center, .datatable-row-center.datatable-row-group, .datatable-body-row.datatable-row-even, .datatable-scroll, .datatable-body-row.datatable-row-odd {width:100% !important;}

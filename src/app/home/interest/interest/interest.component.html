@@ -2,28 +2,18 @@
 
   <div class="box-body pad15">
     <div class="row border-Col">
-
-
       <div class="left_col">
         <label>Total Interests <span>({{page.totalElements}})</span></label>
-        <a class="trashed_text" routerLink="trashed">Trashed Interests <span>({{totalTrashed}})</span></a>
+        <!--<a class="trashed_text" routerLink="trashed">Trashed Interests <span>({{totalTrashed}})</span></a>-->
       </div>
-
-
       <div class="searchBar_col">
-
         <input (input)="onSearch($event)" class="form-control" type="text" placeholder="Search Interests">
       </div>
-
-
-
-
     </div>
   </div>
 
-  <ngx-datatable #myTable class="bootstrap" [rows]="interests"  [headerHeight]="50" [footerHeight]="50" [rowHeight]="50" [limit]="10" [sorts]="[{prop: 'created_at', dir: 'desc'}]">
-
-
+  <ngx-datatable #myTable class="bootstrap" [rows]="interests" [headerHeight]="50" [footerHeight]="50" [rowHeight]="50"
+    [limit]="currentPageLimit" [sorts]="[{prop: 'created_at', dir: 'desc'}]">
 
 
     <ngx-datatable-column [draggable]="false" prop="category_id" [sortable]="true" name="Category">
@@ -34,7 +24,7 @@
 
     <ngx-datatable-column [draggable]="false" prop="subcategory_id" [sortable]="false" name="Subcategory">
       <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
-        {{ row.subcategory }}
+        {{ subcat[row.title] }}
       </ng-template>
     </ngx-datatable-column>
 
@@ -62,8 +52,6 @@
         <div class="icon"><a (click)="delete(row?.id)" href="javascript:void(0)"><i class="fa fa-trash"></i></a></div>
       </ng-template>
     </ngx-datatable-column>
-
-
 
 
   </ngx-datatable>

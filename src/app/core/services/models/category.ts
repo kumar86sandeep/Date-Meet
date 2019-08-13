@@ -6,7 +6,7 @@ export class Category {
     created_at: Date;
   
     
-    constructor(object, subcategory=[]) {
+    constructor(object, subcategory='') {
         this.id = object.id;   
         this.title = object.data().title   
         this.status = (object.data().status)?'Active':'Inactive'  

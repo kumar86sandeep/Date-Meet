@@ -6,6 +6,7 @@ import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Observable, throwError } from 'rxjs';
 import "rxjs/add/operator/debounceTime";
 import "rxjs/add/operator/map";
+import { AmazingTimePickerService } from 'amazing-time-picker'; // this line you need
 
 import { Angular5Csv } from 'angular5-csv/dist/Angular5-csv';
 import { Options, LabelType, ChangeContext } from 'ng5-slider';
@@ -91,7 +92,7 @@ export class CompaniesComponent implements OnInit {
 
 
 
-  constructor(private categoryService: CategoryService, private companyService: CompanyService, private commonUtilsService: CommonUtilsService, private titleService: TitleService, private formBuilder: FormBuilder, private angularFirestore: AngularFirestore, private storage: AngularFireStorage) {
+  constructor(private atp: AmazingTimePickerService, private categoryService: CategoryService, private companyService: CompanyService, private commonUtilsService: CommonUtilsService, private titleService: TitleService, private formBuilder: FormBuilder, private angularFirestore: AngularFirestore, private storage: AngularFireStorage) {
     this.categoryService.allCategory().subscribe(
 
       //case success
@@ -106,6 +107,8 @@ export class CompaniesComponent implements OnInit {
         this.commonUtilsService.onError(error);
       });
   }
+
+  
 
   listSubcategory(event) {
 
@@ -249,6 +252,7 @@ export class CompaniesComponent implements OnInit {
   }
 
   private initCompanyForm() {
+    const reg = '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?';
     this.companyForm = this.formBuilder.group({
       name: [null, [Validators.required]],
       cover_image: [null],
@@ -257,14 +261,14 @@ export class CompaniesComponent implements OnInit {
       about: [null, [Validators.required]],
       category_id: ['', [Validators.required]],
       subcategory_id: ['', [Validators.required]],
-      working_days: [null, [Validators.required]],
+      working_days: [null, [Validators.required, Validators.max(7), Validators.min(1)]],
       working_hours_from: [null, [Validators.required]],
       working_hours_to: [null, [Validators.required]],
       address: [null, [Validators.required]],
-      website: [null, [Validators.required]],
-      connect_instagram: [null],
-      connect_facebook: [null],
-      connect_google: [null],
+      website: [null, [Validators.required, Validators.pattern(reg)]],
+      connect_instagram: [null,[Validators.pattern(reg)]],
+      connect_facebook: [null,[Validators.pattern(reg)]],
+      connect_google: [null,[Validators.pattern(reg)]],
       status: [true],
       created_by: ['admin'],
     });

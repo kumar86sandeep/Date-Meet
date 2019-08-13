@@ -1,9 +1,14 @@
 <mk-box [isLoading]="isLoading" header="Category Listing" [isCollapsable]="true" [isRemovable]="false">
 
+  <div class="box-body pad15">
+    <div class="row border-Col">
+      <div class="searchBar_col">
+        <input (input)="onSearch($event)" class="form-control" type="text" placeholder="Search Category">
+      </div>
+    </div>
+  </div>
 
-  <ngx-datatable #myTable class="bootstrap" [count]="page.totalElements" [offset]="page.pageNumber" [limit]="page.size"
-    [headerHeight]="50" [footerHeight]="50" [rowHeight]="50" [externalPaging]="true" [rows]="categories"
-    [sorts]="[{prop: 'created_at', dir: 'desc'}]" (page)="setPage($event,'all')">
+  <ngx-datatable #myTable class="bootstrap" [rows]="categories" [headerHeight]="50" [footerHeight]="50" [rowHeight]="50"  [limit]="currentPageLimit" [sorts]="[{prop: 'created_at', dir: 'desc'}]">
 
     <ngx-datatable-column [resizeable]="false" [draggable]="false" width="250" [sortable]="false" name="Category name">
       <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
@@ -28,46 +33,42 @@
 
     <ngx-datatable-column [resizeable]="false" [draggable]="false" width="200" [sortable]="true" name="Action">
       <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-        
 
-          <div class="icon"><a href="javascript:void(0)" (click)="populateEditForm(row)"><i class="fa fa-edit"></i></a>  <a
+        <div class="icon"><a href="javascript:void(0)" (click)="populateEditForm(row)"><i class="fa fa-edit"></i></a> <a
             (click)="delete(row.id)" href="javascript:void(0)"><i class="fa fa-trash"></i></a></div>
-
       </ng-template>
     </ngx-datatable-column>
-
-
-
-
   </ngx-datatable>
 
 </mk-box>
 
-<mk-box [isCollapsed]="isCollapsed" header="{{(categoryIdToUpdate)?'Update':'Add'}} search Category" [isRemovable]="false">
+<mk-box [isCollapsed]="isCollapsed" header="{{(categoryIdToUpdate)?'Update':'Add'}} Category" [isRemovable]="false">
 
   <form [formGroup]="addCategoryForm" (ngSubmit)="onAddCategory()">
     <div class="box-body">
 
-        <div class="form_left_col">
-      <div class="form-group">
-        <label for="title">Category Name*:</label>
-        <input type="text" formControlName="title" class="form-control" id="title" placeholder="Enter a category name">
+      <div class="form_left_col">
+        <div class="form-group">
+          <label for="title">Category Name*:</label>
+          <input type="text" formControlName="title" class="form-control" id="title"
+            placeholder="Enter a category name">
+        </div>
+
+        <div class="form-group">
+          <label>Select Status*</label>
+          <select formControlName="status" class="form-control">
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+          </select>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>Select Status*</label>
-        <select formControlName="status" class="form-control">
-          <option value="true">Active</option>
-          <option value="false">Inactive</option>
-        </select>
-      </div>
-    </div>
-
-<div class="clear"></div>
+      <div class="clear"></div>
       <button type="submit" [disabled]="!addCategoryForm.valid"
         [ngClass]="{ 'submit-btn-disable': !addCategoryForm.valid }"
         class="btn btn-primary  btn-flat">{{(categoryIdToUpdate)?'Update':'Create'}} Category</button>
-        <button *ngIf="categoryIdToUpdate" type="button" (click)="cancel()" class="btn btn-primary  btn-flat">Cancel</button>
+      <button *ngIf="categoryIdToUpdate" type="button" (click)="cancel()"
+        class="btn btn-primary  btn-flat">Cancel</button>
       <p *ngIf="addCategoryForm.controls.title.touched || submitted">
         <app-form-validation-errors errorPrefix="Title " [errors]="addCategoryForm.get('title').errors">
         </app-form-validation-errors>

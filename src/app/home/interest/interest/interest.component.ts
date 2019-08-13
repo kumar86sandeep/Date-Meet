@@ -47,37 +47,65 @@ export class InterestComponent implements OnInit {
 
   //Defined records limit and records limit options
   currentPageLimit: number = environment.DEFAULT_RECORDS_LIMIT
-  readonly pageLimitOptions = environment.DEFAULT_PAGE_LIMIT_OPTIONS
+  
 
+  
 
-  //default pagination settings
-  private _defaultPagination = {
-    count: 0,
-    limit: this.currentPageLimit,
-    offset: 0,
-    pageSize: this.currentPageLimit
+  interests = new Array<any>() 
+  subcat:any = [];
+  constructor(private categoryService:CategoryService, private angularFirestore: AngularFirestore, private commonUtilsService: CommonUtilsService) {
   }
 
   ngOnInit(){
-    this.listCategorySubcategory();
+    this.isLoading = true
+    //hit api to fetch data
+    this.categoryService.interestListing().subscribe(
+
+      //case success
+      (pagedData) => {
+        
+        this.interests = [...pagedData];
+        console.log('interests',this.interests)
+        this.interests.forEach(cat => {                         
+          this.listSubcategory(cat.title)
+        })
+        this.isLoading = false
+    
+        //case error 
+      }, error => {
+        console.log(error)
+        this.isLoading = false
+        this.commonUtilsService.onError(error);
+      });
   }
 
-  interests = new Array<any>() 
-  constructor(private angularFirestore: AngularFirestore, private commonUtilsService: CommonUtilsService) {
+  listSubcategory(category){
+      //hit api to fetch data
+    this.categoryService.subcategory(category).subscribe(
+
+      //case success
+      (str) => {
+        
+        this.subcat[category] = str;
+        //console.log('companies',this.companies)
+        
+        //case error 
+      }, error => {
+        console.log(error)
+        this.commonUtilsService.onError(error);
+      });
   }
+  /*listCategorySubcategory() {
 
 
-  listCategorySubcategory() {
     this.angularFirestore.collection<any>('categories').ref
       .get()
       .then(res => {
-        if (res.docs.length == 0) {
-          //no documents found
-        } else {
+        if (res.docs.length > 0) {
           //you got some documents
           let catSucatArr = []
           res.forEach(category => {
-            //catSucatArr['category'] = category.data().title
+           
             this.angularFirestore.collection<any>('subcategories').ref.where('category_id', '==', category.data().title)
               .get()
               .then(subcatres => {
@@ -91,12 +119,14 @@ export class InterestComponent implements OnInit {
 
           })
           this.interests = catSucatArr;
-          console.log('interests', this.interests);
+        } else {          
+          //no documents found
+
         }
       }).catch(err => {
         console.log('something went wrong ' + err)
       });
-  }
+  }*/
 
 
   /**
@@ -107,15 +137,13 @@ export class InterestComponent implements OnInit {
   async delete(categoryId) {
 
     //confirm before deleting car
-    if (! await this.commonUtilsService.isDeleteConfirmed()) {
-      return;
-    }
+  if(! await this.commonUtilsService.isDeleteConfirmed()) {
+    return;
+  } 
 
-    this.angularFirestore.collection('interests').doc(categoryId).update({
-      is_trashed: 'trashed'
-    })
+  this.angularFirestore.doc('categories/' + categoryId).delete();  
 
-    this.commonUtilsService.onSuccess('Interest deleted');
+  this.commonUtilsService.onSuccess('Interest deleted'); 
   }
 
   /**
