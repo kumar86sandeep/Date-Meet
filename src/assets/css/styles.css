@@ -202,7 +202,7 @@ app-sub-category .ngx-datatable.bootstrap .datatable-header .datatable-header-ce
 app-sub-category .border-Col {border-bottom:1px solid #ebebeb; padding:0px 0px 20px 0px;}
 app-sub-category .form-group label {font-weight:500; font-size:13px;}
 app-sub-category input, app-sub-category select {border-radius: 2px !important; height: 42px !important; max-width:85% !important; border: 1px solid #ccc;}
-app-sub-category input[type="file"] {width:100%;border: 1px solid #ccc;padding-top: 9px;vertical-align: middle; padding-left: 12px;}
+app-sub-category input[type="file"] {width:100%;border: 1px solid #ccc;padding:10px 0px 10px 12px;vertical-align: middle; height:auto !important; }
 app-sub-category .border-Col {border-bottom:1px solid #ebebeb; padding:0px 0px 20px 0px;}
 
 app-companies .datatable-header-inner {width:100% !important;}
@@ -228,7 +228,7 @@ app-companies .ngx-datatable.bootstrap .datatable-header .datatable-header-cell 
 app-companies .border-Col {border-bottom:1px solid #ebebeb; padding:0px 0px 20px 0px;}
 app-companies .form-group label {font-weight:500; font-size:13px;}
 app-companies input, app-companies select {border-radius: 2px !important; height: 42px !important; max-width:85% !important; border: 1px solid #ccc;}
-app-companies input[type="file"] {width:100%;border: 1px solid #ccc;padding-top: 9px;vertical-align: middle; padding-left: 12px;}
+app-companies input[type="file"] {width:100%;border: 1px solid #ccc;padding:10px 0px 10px 12px;vertical-align: middle; height:auto !important; }
 
 
 app-profie .datatable-header-inner {width:100% !important;}
@@ -254,7 +254,7 @@ app-profie .ngx-datatable.bootstrap .datatable-header .datatable-header-cell {bo
 app-profie .border-Col {border-bottom:1px solid #ebebeb; padding:0px 0px 20px 0px;}
 app-profie .form-group label {font-weight:500; font-size:13px;}
 app-profie input, app-profie select {border-radius: 2px !important; height: 42px !important; max-width:85% !important; border: 1px solid #ccc;}
-app-profie input[type="file"] {width:100%;border: 1px solid #ccc;padding-top: 9px;vertical-align: middle; padding-left: 12px;}
+app-profie input[type="file"] {width:100%;border: 1px solid #ccc;padding:10px 0px 10px 12px;vertical-align: middle; height:auto !important; }
 
 
 .pad15 {padding:15px;}
@@ -280,3 +280,6 @@ app-header-inner .dropdown-menu .btn.btn-flat {height:30px;font-size: 13px;borde
 .left_col .button.red {border-radius: 50px;height: auto;font-size: 15px;background: linear-gradient(90deg, #FBB040 0%, #FFD100 100.09%);border: 0px;color: #fff;padding: 7px 20px;}
 .m_b_0 {margin-bottom: 0px;}
 .multiple_select {height:100px !important; overflow-y: auto;}
+
+.btn-flat.grey_btn {background:linear-gradient(90deg, #222d32 0%, #162126 100.09%) !important; color:#fff !important; margin-left:10px;}
+.searchBar_col input {border: 1px solid #ddd !important;border-radius: 20px !important;height: 45px !important;}

@@ -68,7 +68,7 @@
         [ngClass]="{ 'submit-btn-disable': !addCategoryForm.valid }"
         class="btn btn-primary  btn-flat">{{(categoryIdToUpdate)?'Update':'Create'}} Category</button>
       <button *ngIf="categoryIdToUpdate" type="button" (click)="cancel()"
-        class="btn btn-primary  btn-flat">Cancel</button>
+        class="btn btn-primary btn-flat grey_btn">Cancel</button>
       <p *ngIf="addCategoryForm.controls.title.touched || submitted">
         <app-form-validation-errors errorPrefix="Title " [errors]="addCategoryForm.get('title').errors">
         </app-form-validation-errors>
